@@ -19,11 +19,6 @@
             Manajemen Tiket
         </a>
 
-        <a href="{{ route('admin.analytics') }}" class="flex items-center px-4 py-2 rounded-lg transition-colors duration-200
-            {{ request()->routeIs('admin.analytics') ? 'bg-blue-700 text-white font-semibold shadow-inner' : 'hover:bg-blue-700 hover:text-white' }}">
-            Analitik
-        </a>
-
         <!-- Logout (letakkan setelah link terakhir, beri margin-top) -->
         <div class="mt-6">
             <form method="POST" action="{{ route('logout') }}">

@@ -65,6 +65,7 @@
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Tiket</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Branch</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Komplain</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal & Jam</th>
@@ -74,9 +75,10 @@
             </thead>
             <tbody id="ticketsTableBody" class="bg-white divide-y divide-gray-200">
                 @foreach($tickets as $ticket)
-                <tr class="hover:bg-gray-50 transition-colors" data-ticket-id="{{ $ticket->id }}" data-ticket-number="{{ $ticket->ticket_number }}" data-company="{{ $ticket->company }}" data-sub-category="{{ $ticket->sub_category }}" data-ticket-type="{{ $ticket->ticket_type }}" data-complaint-type="{{ $ticket->complaint_type }}" data-tanggal="{{ $ticket->tanggal->format('Y-m-d') }}" data-jam="{{ \Carbon\Carbon::parse($ticket->jam)->format('H:i') }}" data-info-kendala="{{ $ticket->info_kendala }}" data-root-cause="{{ $ticket->root_cause ?? '-' }}" data-solving="{{ $ticket->solving ?? '-' }}" data-pic-merchant="{{ $ticket->pic_merchant ?? '-' }}" data-jabatan-merchant="{{ $ticket->jabatan ?? '-' }}" data-pic-helpdesk="{{ $ticket->nama_helpdesk ?? '-' }}">
+                <tr class="hover:bg-gray-50 transition-colors" data-ticket-id="{{ $ticket->id }}" data-ticket-number="{{ $ticket->ticket_number }}" data-company="{{ $ticket->company }}" data-branch="{{$ticket->branch }}" data-sub-category="{{ $ticket->sub_category }}" data-ticket-type="{{ $ticket->ticket_type }}" data-complaint-type="{{ $ticket->complaint_type }}" data-tanggal="{{ $ticket->tanggal->format('Y-m-d') }}" data-jam="{{ \Carbon\Carbon::parse($ticket->jam)->format('H:i') }}" data-info-kendala="{{ $ticket->info_kendala }}" data-root-cause="{{ $ticket->root_cause ?? '-' }}" data-solving="{{ $ticket->solving ?? '-' }}" data-pic-merchant="{{ $ticket->pic_merchant ?? '-' }}" data-jabatan-merchant="{{ $ticket->jabatan ?? '-' }}" data-pic-helpdesk="{{ $ticket->nama_helpdesk ?? '-' }}">
                     <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $ticket->ticket_number }}</td>
                     <td class="px-4 py-4 text-sm text-gray-900">{{ $ticket->company }}</td>
+                    <td class="px-4 py-4 text-sm text-gray-900">{{ $ticket->branch }}</td>
                     <td class="px-4 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $ticket->ticket_type === 'open' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
                             {{ $ticket->ticket_type }}
@@ -209,13 +211,16 @@
                     const ticketNumber = (row.dataset.ticketNumber || '').toLowerCase();
                     const infoKendala = (row.dataset.infoKendala || '').toLowerCase();
                     const company = (row.dataset.company || '').toLowerCase();
+                    const branch = (row.dataset.branch || '').toLowerCase();
                     const tanggal = row.dataset.tanggal || '';
                     const ticketType = (row.dataset.ticketType || '').toLowerCase();
 
                     const matchesSearch = !searchValue ||
                         ticketNumber.includes(searchValue) ||
                         company.includes(searchValue) ||
+                        branch.includes(searchValue) ||
                         infoKendala.includes(searchValue);
+
 
                     const matchesDate = isDateInRange(tanggal, startDateValue, endDateValue);
                     const matchesType = !typeValue || ticketType === typeValue;
@@ -281,6 +286,7 @@
         document.querySelectorAll('.detail-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const row = this.closest('tr');
+                console.log(row.dataset);
 
                 const getTypeBadge = (type) => {
                     const typeConfig = {
@@ -323,7 +329,11 @@
                                     </div>
                                     <div class="flex justify-between items-start">
                                         <dt class="text-sm font-medium text-gray-500 min-w-0 flex-1">Company:</dt>
-                                        <dd class="text-sm text-gray-900 text-right flex-1">${row.dataset.company}</dd>
+                                        <dd class="text-sm text-gray-900 text-right flex-1">${row.dataset.company}</dd> 
+                                    </div>
+                                    <div class="flex justify-between items-start">
+                                        <dt class="text-sm font-medium text-gray-500 min-w-0 flex-1">Branch:</dt>
+                                        <dd class="text-sm text-gray-900 text-right flex-1">${row.dataset.branch}</dd> 
                                     </div>
                                     <div class="flex justify-between items-start">
                                         <dt class="text-sm font-medium text-gray-500 min-w-0 flex-1">Sub Category:</dt>

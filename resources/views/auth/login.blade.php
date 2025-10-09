@@ -28,12 +28,6 @@
                 Login
             </button>
         </form>
-
-        <div class="mt-6 p-4 bg-gray-50 rounded-md">
-            <p class="text-sm text-gray-600">Demo Accounts:</p>
-            <p class="text-sm"><strong>Admin:</strong> admin@ticketing.com / password</p>
-            <p class="text-sm"><strong>Karyawan:</strong> karyawan@ticketing.com / password</p>
-        </div>
     </div>
 </div>
 @endsection

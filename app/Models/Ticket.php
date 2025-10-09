@@ -23,6 +23,8 @@ class Ticket extends Model
         'application',
         'category',
         'sub_category',
+        'status_qris',
+        'assigned',
         'info_kendala',
         'pengecekan',
         'root_cause',

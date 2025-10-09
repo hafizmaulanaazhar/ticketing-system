@@ -19,24 +19,40 @@ return new class extends Migration
             $table->string('company');
             $table->string('branch');
             $table->string('kota_cabang');
-            $table->enum('priority', ['Premium', 'full service', 'lainnya']);
+            $table->enum('priority', ['Premium', 'full service', 'lainnya', 'corporate']);
             $table->enum('application', [
                 'aplikasi kasir',
                 'aplikasi web merchant',
                 'hardware',
+                'Aplikasi Mobile',
                 'Aplikasi web internal',
                 'Aplikasi Attendance'
             ]);
             $table->enum('category', [
                 'assistance',
                 'General Question',
-                'application bugs'
+                'application bugs',
+                'Request Features'
             ]);
             $table->string('sub_category');
+            $table->enum('status_qris', [
+                'sukses',
+                'pending/expired',
+                'gagal',
+                'none'
+            ])->default('none');
             $table->text('info_kendala');
             $table->text('pengecekan')->nullable();
             $table->text('root_cause')->nullable();
             $table->text('solving')->nullable();
+            $table->enum('assigned', [
+                'Helpdesk',
+                'Development',
+                'Marketing',
+                'Tim Support',
+                'Gudang',
+                'Tim PAC'
+            ]);
             $table->string('pic_merchant');
             $table->string('jabatan');
             $table->string('nama_helpdesk');

@@ -35,27 +35,28 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithSt
     {
         return [
             'No. Tiket',
+            'Tipe Tiket',
+            'Tipe Komplain',
             'Tanggal',
             'Jam',
             'Nama Karyawan',
+            'Source',
             'Company',
             'Branch',
             'Kota Cabang',
-            'Kategori',
-            'Sub Kategori',
-            'Aplikasi',
+            'Priority',
+            'Application/Hardware',
+            'Category',
+            'Sub Category',
+            'Status QRIS',
             'Info Kendala',
-            'Tipe Tiket',
-            'Tipe Komplain',
-            'Status',
             'Pengecekan',
             'Root Cause',
             'Solving',
+            'Assigned To',
             'PIC Merchant',
-            'Jabatan Merchant',
+            'Jabatan',
             'Nama Helpdesk',
-            'Created At',
-            'Updated At'
         ];
     }
 
@@ -63,43 +64,90 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithSt
     {
         return [
             $ticket->ticket_number,
+            $ticket->ticket_type,
+            $ticket->complaint_type,
             $ticket->tanggal ? $ticket->tanggal->format('d/m/Y') : '-',
             $ticket->jam ? \Carbon\Carbon::parse($ticket->jam)->format('H:i') : '-',
             $ticket->user->name ?? '-',
+            $ticket->source,
             $ticket->company,
             $ticket->branch,
             $ticket->kota_cabang,
+            $ticket->priority,
+            $ticket->application,
             $ticket->category,
             $ticket->sub_category,
-            $ticket->application,
+            $ticket->status_qris,
             $ticket->info_kendala,
-            $ticket->ticket_type,
-            $ticket->complaint_type,
-            $ticket->status,
-            $ticket->pengecekan,
+            $ticket->pengecekan ?? '-',
             $ticket->root_cause ?? '-',
             $ticket->solving ?? '-',
-            $ticket->pic_merchant ?? '-',
-            $ticket->jabatan ?? '-',
-            $ticket->nama_helpdesk ?? '-',
-            $ticket->created_at->format('d/m/Y H:i'),
-            $ticket->updated_at->format('d/m/Y H:i'),
+            $ticket->assigned,
+            $ticket->pic_merchant,
+            $ticket->jabatan,
+            $ticket->nama_helpdesk,
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
+        // Set column widths for better readability
+        $sheet->getColumnDimension('A')->setWidth(15); // No. Tiket
+        $sheet->getColumnDimension('B')->setWidth(12); // Tipe Tiket
+        $sheet->getColumnDimension('C')->setWidth(15); // Tipe Komplain
+        $sheet->getColumnDimension('D')->setWidth(12); // Tanggal
+        $sheet->getColumnDimension('E')->setWidth(10); // Jam
+        $sheet->getColumnDimension('F')->setWidth(20); // Nama Karyawan
+        $sheet->getColumnDimension('G')->setWidth(15); // Source
+        $sheet->getColumnDimension('H')->setWidth(20); // Company
+        $sheet->getColumnDimension('I')->setWidth(20); // Branch
+        $sheet->getColumnDimension('J')->setWidth(15); // Kota Cabang
+        $sheet->getColumnDimension('K')->setWidth(15); // Priority
+        $sheet->getColumnDimension('L')->setWidth(20); // Application/Hardware
+        $sheet->getColumnDimension('M')->setWidth(15); // Category
+        $sheet->getColumnDimension('N')->setWidth(20); // Sub Category
+        $sheet->getColumnDimension('O')->setWidth(15); // Status QRIS
+        $sheet->getColumnDimension('P')->setWidth(30); // Info Kendala
+        $sheet->getColumnDimension('Q')->setWidth(30); // Pengecekan
+        $sheet->getColumnDimension('R')->setWidth(30); // Root Cause
+        $sheet->getColumnDimension('S')->setWidth(30); // Solving
+        $sheet->getColumnDimension('T')->setWidth(15); // Assigned To
+        $sheet->getColumnDimension('U')->setWidth(12); // Tipe Tiket
+        $sheet->getColumnDimension('V')->setWidth(15); // Tipe Komplain
+        $sheet->getColumnDimension('W')->setWidth(20); // PIC Merchant
+        $sheet->getColumnDimension('X')->setWidth(15); // Jabatan
+        $sheet->getColumnDimension('Y')->setWidth(20); // Nama Helpdesk
+
         return [
             // Style the first row as bold text with background color
             1 => [
-                'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+                'font' => [
+                    'bold' => true,
+                    'color' => ['rgb' => 'FFFFFF'],
+                    'size' => 11
+                ],
                 'fill' => [
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                     'startColor' => ['rgb' => '4F46E5']
+                ],
+                'alignment' => [
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    'wrapText' => true
                 ]
             ],
             // Style for all cells
             'A:Z' => [
+                'alignment' => [
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+                    'wrapText' => true
+                ],
+                'font' => [
+                    'size' => 10
+                ]
+            ],
+            // Style for data rows
+            'A2:Z1000' => [
                 'alignment' => [
                     'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
                     'wrapText' => true
@@ -110,6 +158,8 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithSt
 
     public function title(): string
     {
-        return 'Tickets Report';
+        $start = Carbon::parse($this->startDate)->format('d-m-Y');
+        $end = Carbon::parse($this->endDate)->format('d-m-Y');
+        return "Tickets {$start} to {$end}";
     }
 }

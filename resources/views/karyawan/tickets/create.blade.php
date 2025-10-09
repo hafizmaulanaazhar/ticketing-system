@@ -78,6 +78,7 @@
                     <option value="Premium" {{ old('priority') == 'Premium' ? 'selected' : '' }}>Premium</option>
                     <option value="full service" {{ old('priority') == 'full service' ? 'selected' : '' }}>Full Service</option>
                     <option value="lainnya" {{ old('priority') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
+                    <option value="corporate" {{ old('priority') == 'corporate' ? 'selected' : '' }}>Corporate</option>
                 </select>
                 @error('priority')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -119,6 +120,7 @@
                     <option value="hardware" {{ old('application') == 'hardware' ? 'selected' : '' }}>Hardware</option>
                     <option value="Aplikasi web internal" {{ old('application') == 'Aplikasi web internal' ? 'selected' : '' }}>Aplikasi Web Internal</option>
                     <option value="Aplikasi Attendance" {{ old('application') == 'Aplikasi Attendance' ? 'selected' : '' }}>Aplikasi Attendance</option>
+                    <option value="Aplikasi Mobile" {{ old('application') == 'Aplikasi Mobile' ? 'selected' : '' }}>Aplikasi Mobile</option>
                 </select>
                 @error('application')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -133,6 +135,7 @@
                     <option value="assistance" {{ old('category') == 'assistance' ? 'selected' : '' }}>Assistance</option>
                     <option value="General Question" {{ old('category') == 'General Question' ? 'selected' : '' }}>General Question</option>
                     <option value="application bugs" {{ old('category') == 'application bugs' ? 'selected' : '' }}>Application Bugs</option>
+                    <option value="Request Features" {{ old('category') == 'Request Features' ? 'selected' : '' }}>Request Features</option>
                 </select>
                 @error('category')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -142,8 +145,47 @@
             <!-- Sub Category -->
             <div class="md:col-span-2">
                 <label for="sub_category" class="block text-sm font-medium text-gray-700 mb-2">Sub Category *</label>
-                <input type="text" name="sub_category" id="sub_category" value="{{ old('sub_category') }}" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select name="sub_category" id="sub_category" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Pilih Sub Kategori</option>
+                    @foreach($subCategories as $subCategory)
+                    <option value="{{ $subCategory }}" {{ old('sub_category') == $subCategory ? 'selected' : '' }}>
+                        {{ $subCategory }}
+                    </option>
+                    @endforeach
+                </select>
                 @error('sub_category')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Status QRIS -->
+            <div>
+                <label for="status_qris" class="block text-sm font-medium text-gray-700 mb-2">Status QRIS *</label>
+                <select name="status_qris" id="status_qris" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Pilih Status QRIS</option>
+                    <option value="sukses" {{ old('status_qris') == 'sukses' ? 'selected' : '' }}>Sukses</option>
+                    <option value="pending/expired" {{ old('status_qris') == 'pending/expired' ? 'selected' : '' }}>Pending/Expired</option>
+                    <option value="gagal" {{ old('status_qris') == 'gagal' ? 'selected' : '' }}>Gagal</option>
+                    <option value="none" {{ old('status_qris') == 'none' ? 'selected' : '' }}>None</option>
+                </select>
+                @error('status_qris')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Assigned -->
+            <div>
+                <label for="assigned" class="block text-sm font-medium text-gray-700 mb-2">Assigned To *</label>
+                <select name="assigned" id="assigned" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Pilih Assigned</option>
+                    <option value="Helpdesk" {{ old('assigned') == 'Helpdesk' ? 'selected' : '' }}>Helpdesk</option>
+                    <option value="Development" {{ old('assigned') == 'Development' ? 'selected' : '' }}>Development</option>
+                    <option value="Marketing" {{ old('assigned') == 'Marketing' ? 'selected' : '' }}>Marketing</option>
+                    <option value="Tim Support" {{ old('assigned') == 'Tim Support' ? 'selected' : '' }}>Tim Support</option>
+                    <option value="Gudang" {{ old('assigned') == 'Gudang' ? 'selected' : '' }}>Gudang</option>
+                    <option value="Tim PAC" {{ old('assigned') == 'Tim PAC' ? 'selected' : '' }}>Tim PAC</option>
+                </select>
+                @error('assigned')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>

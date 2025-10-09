@@ -74,7 +74,7 @@
                     <td class="px-4 py-2">{{ $ticket->company }}</td>
                     <td class="px-4 py-2">{{ $ticket->branch }}</td>
                     <td class="px-4 py-2">
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $ticket->ticket_type === 'open' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $ticket->ticket_type === 'Open' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
                             {{ ucfirst($ticket->ticket_type) }}
                         </span>
                     </td>

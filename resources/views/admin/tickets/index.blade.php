@@ -37,7 +37,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-red-100 text-sm font-medium">Tiket Open</p>
-                <p class="text-3xl font-bold mt-1">{{ $tickets->where('ticket_type', 'open')->count() }}</p>
+                <p class="text-3xl font-bold mt-1">{{ $tickets->where('ticket_type', 'Open')->count() }}</p>
             </div>
             <div class="p-3 bg-red-400 rounded-xl">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
             <select id="typeFilter" class="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors">
-                <option value="">Semua Status</option>
+                <option value="">Semua Tipe</option>
                 <option value="open">Open</option>
                 <option value="close">Close</option>
             </select>
@@ -110,6 +110,7 @@
                 <option value="assistance" {{ request('category') == 'assistance' ? 'selected' : '' }}>Assistance</option>
                 <option value="General Question" {{ request('category') == 'General Question' ? 'selected' : '' }}>General Question</option>
                 <option value="application bugs" {{ request('category') == 'application bugs' ? 'selected' : '' }}>Application Bugs</option>
+                <option value="Request Features" {{ old('category') == 'Request Features' ? 'selected' : '' }}>Request Features</option>
             </select>
         </div>
 
@@ -154,7 +155,7 @@
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Helpdesk</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Company</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cabang</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tipe</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Komplain</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal & Jam</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
@@ -162,7 +163,7 @@
             </thead>
             <tbody id="ticketsTableBody" class="bg-white divide-y divide-gray-200">
                 @foreach($tickets as $ticket)
-                <tr class="hover:bg-gray-50 transition-colors group" data-ticket-id="{{ $ticket->id }}" data-ticket-number="{{ $ticket->ticket_number }}" data-user-name="{{ $ticket->user->name }}" data-company="{{ $ticket->company }}" data-branch="{{ $ticket->branch }}" data-sub-category="{{ $ticket->sub_category }}" data-ticket-type="{{ $ticket->ticket_type }}" data-complaint-type="{{ $ticket->complaint_type }}" data-tanggal="{{ $ticket->tanggal->format('d/m/Y') }}" data-jam="{{ \Carbon\Carbon::parse($ticket->jam)->format('H:i') }}" data-status="{{ $ticket->status }}" data-info-kendala="{{ $ticket->info_kendala }}" data-pengecekan="{{ $ticket->pengecekan }}" data-root-cause="{{ $ticket->root_cause ?? '-' }}" data-solving="{{ $ticket->solving ?? '-' }}" data-pic-merchant="{{ $ticket->pic_merchant ?? '-' }}" data-jabatan-merchant="{{ $ticket->jabatan ?? '-' }}" data-pic-helpdesk="{{ $ticket->nama_helpdesk ?? '-' }}">
+                <tr class="hover:bg-gray-50 transition-colors group" data-ticket-id="{{ $ticket->id }}" data-ticket-number="{{ $ticket->ticket_number }}" data-user-name="{{ $ticket->user->name }}" data-company="{{ $ticket->company }}" data-branch="{{ $ticket->branch }}" data-kota-cabang="{{ $ticket->kota_cabang }}" data-sub-category="{{ $ticket->sub_category }}" data-priority="{{ $ticket->priority }}" data-application="{{ $ticket->application }}" data-category="{{ $ticket->category }}" data-source="{{ $ticket->source }}" data-ticket-type="{{ $ticket->ticket_type }}" data-complaint-type="{{ $ticket->complaint_type }}" data-tanggal="{{ $ticket->tanggal->format('Y-m-d') }}" data-jam="{{ \Carbon\Carbon::parse($ticket->jam)->format('H:i') }}" data-info-kendala="{{ $ticket->info_kendala }}" data-pengecekan="{{ $ticket->pengecekan ?? '-' }}" data-root-cause="{{ $ticket->root_cause ?? '-' }}" data-solving="{{ $ticket->solving ?? '-' }}" data-status-qris="{{ $ticket->status_qris }}" data-assigned="{{ $ticket->assigned }}" data-pic-merchant="{{ $ticket->pic_merchant }}" data-jabatan="{{ $ticket->jabatan }}" data-nama-helpdesk="{{ $ticket->nama_helpdesk }}">
 
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
@@ -184,8 +185,8 @@
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $ticket->ticket_type === 'open' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-green-100 text-green-800 border border-green-200' }}">
-                            {{ $ticket->ticket_type === 'open' ? 'Open' : 'Closed' }}
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $ticket->ticket_type === 'Open' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-green-100 text-green-800 border border-green-200' }}">
+                            {{ $ticket->ticket_type === 'Open' ? 'Open' : 'Closed' }}
                         </span>
                     </td>
 
@@ -231,31 +232,44 @@
 @endif
 
 <!-- Modal Detail Tiket -->
-<div id="ticketDetailModal" class="fixed inset-0 overflow-y-auto hidden z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+<div id="ticketDetailModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay -->
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-            <div class="bg-white px-6 pt-6 pb-4">
-                <div class="flex items-center justify-between mb-4">
-                    <button type="button" id="closeModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+
+        <!-- Modal panel -->
+        <div class="inline-block w-full max-w-4xl my-8 text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+            <!-- Header -->
+            <div class="bg-blue-600 px-6 py-4 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-white" id="modal-title">
+                        Detail Tiket
+                    </h3>
+                    <button type="button" id="closeModal" class="text-white hover:text-blue-200 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
-                <div id="ticketDetailContent" class="space-y-6 max-h-96 overflow-y-auto pr-2">
+            </div>
+
+            <!-- Content -->
+            <div class="px-6 py-6">
+                <div id="ticketDetailContent" class="space-y-6">
                     <!-- Content will be loaded here -->
                 </div>
             </div>
+
+            <!-- Footer -->
             <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 rounded-b-2xl">
-                <button type="button" id="closeModalBtn" class="w-full inline-flex justify-center items-center px-4 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                <button type="button" id="closeModalBtn" class="w-full inline-flex justify-center items-center px-4 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">
                     Tutup
                 </button>
             </div>
         </div>
     </div>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
@@ -267,6 +281,7 @@
         const ticketDetailModal = document.getElementById('ticketDetailModal');
         const ticketDetailContent = document.getElementById('ticketDetailContent');
         const closeModal = document.getElementById('closeModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
 
         function filterTickets() {
             loadingIndicator.classList.remove('hidden');
@@ -283,14 +298,14 @@
                     const detailInfo = row.dataset.infoKendala.toLowerCase();
                     const company = row.dataset.company.toLowerCase();
                     const branch = row.dataset.branch.toLowerCase();
-                    const userName = row.dataset.userName.toLowerCase();
-                    const ticketType = row.dataset.ticketType;
+                    const helpdesk = row.dataset.namaHelpdesk.toLowerCase();
+                    const ticketType = row.dataset.ticketType.toLocaleLowerCase();
 
                     const matchesSearch = ticketNumber.includes(searchValue) ||
                         detailInfo.includes(searchValue) ||
                         company.includes(searchValue) ||
                         branch.includes(searchValue) ||
-                        userName.includes(searchValue);
+                        helpdesk.includes(searchValue)
                     const matchesType = !typeValue || ticketType === typeValue;
 
                     if (matchesSearch && matchesType) {
@@ -346,111 +361,200 @@
             button.addEventListener('click', function() {
                 const row = this.closest('tr');
 
-                const getStatusBadge = (status) => {
-                    const statusConfig = {
-                        'open': {
-                            class: 'bg-red-100 text-red-800',
-                            text: 'Open'
+                const getBadge = (type, value) => {
+                    const configs = {
+                        'ticket_type': {
+                            'open': {
+                                class: 'bg-red-100 text-red-800',
+                                text: 'Open'
+                            },
+                            'close': {
+                                class: 'bg-green-100 text-green-800',
+                                text: 'Close'
+                            }
                         },
-                        'progress': {
-                            class: 'bg-yellow-100 text-yellow-800',
-                            text: 'Progress'
+                        'complaint_type': {
+                            'normal': {
+                                class: 'bg-green-100 text-green-800',
+                                text: 'Normal'
+                            },
+                            'hard': {
+                                class: 'bg-red-100 text-red-800',
+                                text: 'Hard'
+                            }
                         },
-                        'closed': {
-                            class: 'bg-green-100 text-green-800',
-                            text: 'Closed'
+                        'priority': {
+                            'Premium': {
+                                class: 'bg-purple-100 text-purple-800',
+                                text: 'Premium'
+                            },
+                            'full service': {
+                                class: 'bg-blue-100 text-blue-800',
+                                text: 'Full Service'
+                            },
+                            'corporate': {
+                                class: 'bg-indigo-100 text-indigo-800',
+                                text: 'Corporate'
+                            },
+                            'lainnya': {
+                                class: 'bg-gray-100 text-gray-800',
+                                text: 'Lainnya'
+                            }
+                        },
+                        'status_qris': {
+                            'sukses': {
+                                class: 'bg-green-100 text-green-800',
+                                text: 'Sukses'
+                            },
+                            'pending/expired': {
+                                class: 'bg-yellow-100 text-yellow-800',
+                                text: 'Pending/Expired'
+                            },
+                            'gagal': {
+                                class: 'bg-red-100 text-red-800',
+                                text: 'Gagal'
+                            },
+                            'none': {
+                                class: 'bg-gray-100 text-gray-800',
+                                text: 'None'
+                            }
                         }
                     };
-                    const config = statusConfig[status] || {
-                        class: 'bg-gray-100 text-gray-800',
-                        text: status
-                    };
-                    return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.class}">${config.text}</span>`;
-                };
 
-                const getTypeBadge = (type) => {
-                    const typeConfig = {
-                        'open': {
-                            class: 'bg-red-100 text-red-800',
-                            text: 'Open'
-                        },
-                        'close': {
-                            class: 'bg-green-100 text-green-800',
-                            text: 'Close'
-                        },
-                        'normal': {
-                            class: 'bg-green-100 text-green-800',
-                            text: 'Normal'
-                        }
-                    };
-                    const config = typeConfig[type] || {
+                    const config = configs[type]?.[value] || {
                         class: 'bg-gray-100 text-gray-800',
-                        text: type
+                        text: value
                     };
                     return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.class}">${config.text}</span>`;
                 };
 
                 ticketDetailContent.innerHTML = `
                     <div class="space-y-6">
-                        <!-- Header -->
-                        <div class="bg-blue-50 -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
-                            <h4 class="text-lg font-semibold text-blue-800">Detail Tiket - ${row.dataset.ticketNumber}</h4>
-                            <p class="text-blue-600">Dibuat oleh: ${row.dataset.userName}</p>
+                        <!-- Nomor Tiket -->
+                        <div class="text-center">
+                            <h4 class="text-lg font-semibold text-gray-800">${row.dataset.ticketNumber}</h4>
                         </div>
 
-                        <!-- Informasi Utama -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div class="space-y-4">
-                                <h5 class="font-semibold text-gray-700 border-b pb-2">Informasi Dasar</h5>
-                                <dl class="space-y-3">
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">No. Tiket:</dt><dd class="text-sm text-gray-900">${row.dataset.ticketNumber}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Karyawan:</dt><dd class="text-sm text-gray-900">${row.dataset.userName}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Company:</dt><dd class="text-sm text-gray-900">${row.dataset.company}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Branch:</dt><dd class="text-sm text-gray-900">${row.dataset.branch}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Sub Category:</dt><dd class="text-sm text-gray-900">${row.dataset.subCategory}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">PIC Merchant:</dt><dd class="text-sm text-gray-900">${row.dataset.picMerchant}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Jabatan:</dt><dd class="text-sm text-gray-900">${row.dataset.jabatanMerchant}</dd></div>
+                        <!-- Informasi Dasar -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <h5 class="font-semibold text-gray-700 text-sm">Informasi Perusahaan</h5>
+                                <dl class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Company:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.company}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Branch:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.branch}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Kota Cabang:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.kotaCabang}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">PIC Merchant:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.picMerchant}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Jabatan:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.jabatan}</dd>
+                                    </div>
                                 </dl>
                             </div>
 
-                            <div class="space-y-4">
-                                <h5 class="font-semibold text-gray-700 border-b pb-2">Status & Tim</h5>
-                                <dl class="space-y-3">
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Tipe Tiket:</dt><dd class="text-sm">${getTypeBadge(row.dataset.ticketType)}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Tipe Komplain:</dt><dd class="text-sm">${getTypeBadge(row.dataset.complaintType)}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Tanggal:</dt><dd class="text-sm text-gray-900">${row.dataset.tanggal}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">Jam:</dt><dd class="text-sm text-gray-900">${row.dataset.jam}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-sm font-medium text-gray-500">PIC Helpdesk:</dt><dd class="text-sm text-gray-900">${row.dataset.picHelpdesk}</dd></div>
+                            <div class="space-y-3">
+                                <h5 class="font-semibold text-gray-700 text-sm">Status & Kategori</h5>
+                                <dl class="space-y-2 text-sm">
+                                    <div class="flex justify-between items-center">
+                                        <dt class="text-gray-500">Tipe Tiket:</dt>
+                                        <dd>${getBadge('ticket_type', row.dataset.ticketType)}</dd>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <dt class="text-gray-500">Tipe Komplain:</dt>
+                                        <dd>${getBadge('complaint_type', row.dataset.complaintType)}</dd>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <dt class="text-gray-500">Priority:</dt>
+                                        <dd>${getBadge('priority', row.dataset.priority)}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Tanggal:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.tanggal}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Jam:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.jam}</dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </div>
+
+                        <!-- Informasi Teknis -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <h5 class="font-semibold text-gray-700 text-sm">Kategori & Aplikasi</h5>
+                                <dl class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Application:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.application}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Category:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.category}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Sub Category:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.subCategory}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Source:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.source}</dd>
+                                    </div>
+                                </dl>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h5 class="font-semibold text-gray-700 text-sm">Penugasan & Status</h5>
+                                <dl class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Assigned To:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.assigned}</dd>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <dt class="text-gray-500">Status QRIS:</dt>
+                                        <dd>${getBadge('status_qris', row.dataset.statusQris)}</dd>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <dt class="text-gray-500">Nama Helpdesk:</dt>
+                                        <dd class="text-gray-900 font-medium">${row.dataset.namaHelpdesk}</dd>
+                                    </div>
                                 </dl>
                             </div>
                         </div>
 
                         <!-- Detail Kendala -->
-                        <div class="space-y-3">
-                            <h5 class="font-semibold text-gray-700 border-b pb-2">Detail Kendala</h5>
-                            <div class="bg-gray-50 rounded-lg p-4">
+                        <div class="space-y-2">
+                            <h5 class="font-semibold text-gray-700 text-sm">Detail Kendala</h5>
+                            <div class="bg-gray-50 rounded-lg p-3">
                                 <p class="text-sm text-gray-700 leading-relaxed">${row.dataset.infoKendala}</p>
                             </div>
                         </div>
 
-                        <!-- Proses Pengecekan -->
+                        <!-- Pengecekan & Penyelesaian -->
                         <div class="space-y-3">
-                            <h5 class="font-semibold text-gray-700 border-b pb-2">Proses Pengecekan</h5>
-                            <div class="bg-yellow-50 rounded-lg p-4">
-                                <p class="text-sm text-gray-700 leading-relaxed">${row.dataset.pengecekan}</p>
-                            </div>
-                        </div>
-
-                        <!-- Penyelesaian -->
-                        <div class="space-y-4">
-                            <h5 class="font-semibold text-gray-700 border-b pb-2">Penyelesaian</h5>
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                <div class="bg-blue-50 rounded-lg p-4">
-                                    <h6 class="text-sm font-semibold text-blue-700 mb-2">Root Cause</h6>
+                            <h5 class="font-semibold text-gray-700 text-sm">Proses Penyelesaian</h5>
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="bg-blue-50 rounded-lg p-3">
+                                    <h6 class="text-sm font-semibold text-blue-700 mb-1">Pengecekan</h6>
+                                    <p class="text-sm text-gray-700">${row.dataset.pengecekan}</p>
+                                </div>
+                                <div class="bg-orange-50 rounded-lg p-3">
+                                    <h6 class="text-sm font-semibold text-orange-700 mb-1">Root Cause</h6>
                                     <p class="text-sm text-gray-700">${row.dataset.rootCause}</p>
                                 </div>
-                                <div class="bg-green-50 rounded-lg p-4">
-                                    <h6 class="text-sm font-semibold text-green-700 mb-2">Solving</h6>
+                                <div class="bg-green-50 rounded-lg p-3">
+                                    <h6 class="text-sm font-semibold text-green-700 mb-1">Solving</h6>
                                     <p class="text-sm text-gray-700">${row.dataset.solving}</p>
                                 </div>
                             </div>
@@ -458,12 +562,20 @@
                     </div>
                 `;
                 ticketDetailModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
             });
         });
 
-        closeModal.addEventListener('click', () => ticketDetailModal.classList.add('hidden'));
+        // Close modal functions
+        function closeModalFunction() {
+            ticketDetailModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        closeModal.addEventListener('click', closeModalFunction);
+        closeModalBtn.addEventListener('click', closeModalFunction);
         ticketDetailModal.addEventListener('click', e => {
-            if (e.target === ticketDetailModal) ticketDetailModal.classList.add('hidden');
+            if (e.target === ticketDetailModal) closeModalFunction();
         });
     });
 </script>

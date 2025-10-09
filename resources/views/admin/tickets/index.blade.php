@@ -151,7 +151,7 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No. Tiket</th>
-                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Karyawan</th>
+                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Helpdesk</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Company</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Cabang</th>
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
@@ -172,7 +172,7 @@
                     </td>
 
                     <td class="px-6 py-4">
-                        <div class="text-sm text-gray-900 font-medium">{{ $ticket->user->name }}</div>
+                        <div class="text-sm text-gray-900 font-medium">{{ $ticket->nama_helpdesk }}</div>
                     </td>
 
                     <td class="px-6 py-4">

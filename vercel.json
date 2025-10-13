@@ -34,9 +34,9 @@
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
         "DB_CONNECTION": "mysql",
-        "DB_HOST": "60b6kk.h.filess.io",
-        "DB_PORT": "61002",
-        "DB_DATABASE": "ticketing_providemen",
-        "DB_USERNAME": "ticketing_providemen"
+        "DB_HOST": "4mg4re.h.filess.io",
+        "DB_PORT": "3307",
+        "DB_DATABASE": "Ticket_beelonger",
+        "DB_USERNAME": "Ticket_beelonger"
     }
 }

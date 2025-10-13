@@ -16,12 +16,10 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Total tickets
         $totalTickets = Ticket::count();
         $openTickets = Ticket::where('ticket_type', 'open')->count();
         $closedTickets = Ticket::where('ticket_type', 'close')->count();
 
-        // Tickets per hour
         $ticketsPerHour = Ticket::select(
             DB::raw('HOUR(jam) as hour'),
             DB::raw('COUNT(*) as count')

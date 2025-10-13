@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Exports\TicketsExport;
-use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Facades\Excel as ExcelFacade;
 use Carbon\Carbon;
 
 
@@ -277,6 +277,7 @@ class AdminController extends Controller
         return view('admin.tickets.index', compact('tickets', 'users'));
     }
 
+
     public function exportExcel(Request $request)
     {
         $period = $request->get('period', 'month');
@@ -289,31 +290,41 @@ class AdminController extends Controller
                 $week = Carbon::parse($date);
                 $startDate = $week->startOfWeek()->format('Y-m-d');
                 $endDate = $week->endOfWeek()->format('Y-m-d');
-                $filename .= $startDate . '_to_' . $endDate . '.xlsx';
+                $filename .= $startDate . '_to_' . $endDate . '.csv';
                 break;
 
             case 'month':
                 $month = Carbon::parse($date);
                 $startDate = $month->startOfMonth()->format('Y-m-d');
                 $endDate = $month->endOfMonth()->format('Y-m-d');
-                $filename .= $month->format('F_Y') . '.xlsx';
+                $filename .= $month->format('F_Y') . '.csv';
                 break;
 
             case 'year':
                 $year = Carbon::createFromFormat('Y', $date);
                 $startDate = $year->startOfYear()->format('Y-m-d');
                 $endDate = $year->endOfYear()->format('Y-m-d');
-                $filename .= $year->format('Y') . '.xlsx';
+                $filename .= $year->format('Y') . '.csv';
                 break;
 
             default:
                 $startDate = now()->startOfMonth()->format('Y-m-d');
                 $endDate = now()->endOfMonth()->format('Y-m-d');
-                $filename .= now()->format('F_Y') . '.xlsx';
+                $filename .= now()->format('F_Y') . '.csv';
         }
 
-        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
+        return ExcelFacade::download(
+            new TicketsExport($startDate, $endDate),
+            $filename,
+            Excel::CSV,
+            [
+                'Content-Type' => 'text/csv',
+                'delimiter' => ';',     // Biar Excel Indonesia tidak acak
+                'use_bom' => true,      // Biar karakter tidak aneh
+            ]
+        );
     }
+
 
     public function downloadReport()
     {

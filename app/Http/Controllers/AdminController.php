@@ -278,8 +278,9 @@ class AdminController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $period = $request->get('period', 'month');
+        $period = $request->get('period', 'month'); // week, month, year
         $date = $request->get('date', now()->format('Y-m'));
+
         $filename = 'tickets_report_';
 
         switch ($period) {
@@ -310,22 +311,18 @@ class AdminController extends Controller
                 $filename .= now()->format('F_Y') . '.xlsx';
         }
 
-        $excelContent = Excel::raw(new TicketsExport($startDate, $endDate), \Maatwebsite\Excel\Excel::XLSX);
-
-        return response($excelContent, 200, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Cache-Control' => 'max-age=0',
-        ]);
+        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
     }
 
     public function downloadReport()
     {
+        // Get available years for filter
         $years = Ticket::select(DB::raw('YEAR(created_at) as year'))
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
 
+        // Get current week and month for default values
         $currentWeek = now()->format('Y-\WW');
         $currentMonth = now()->format('Y-m');
         $currentYear = now()->format('Y');

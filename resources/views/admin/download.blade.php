@@ -8,6 +8,19 @@
     <p class="text-gray-600 mt-2">Download laporan tiket dalam format Excel</p>
 </div>
 
+<!-- Tambahkan alert untuk errors -->
+@if(session('error'))
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+    {{ session('error') }}
+</div>
+@endif
+
+@if(session('warning'))
+<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-6">
+    {{ session('warning') }}
+</div>
+@endif
+
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
     <!-- Card Mingguan -->
     <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
@@ -21,17 +34,19 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Laporan Mingguan</h3>
         <p class="text-gray-600 text-sm mb-4">Download laporan tiket per minggu</p>
 
-        <form action="{{ route('admin.export.excel') }}" method="GET" class="space-y-4">
+        <form action="{{ route('admin.export.excel') }}" method="GET" class="space-y-4 export-form">
             <input type="hidden" name="period" value="week">
             <div>
                 <label for="week" class="block text-sm font-medium text-gray-700 mb-2">Pilih Minggu</label>
-                <input type="week" name="date" id="week" value="{{ $currentWeek }}" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 transition-colors" required>
+                <input type="week" name="date" id="week" value="{{ $currentWeek }}" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 transition-colors" required pattern="\d{4}-W\d{2}">
+                <p class="text-xs text-gray-500 mt-1">Format: YYYY-Www (contoh: 2024-W01)</p>
             </div>
-            <button type="submit" class="w-full bg-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center">
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center export-btn">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                Download Excel
+                <span class="btn-text">Download Excel</span>
+                <span class="btn-loading hidden">Memproses...</span>
             </button>
         </form>
     </div>
@@ -48,17 +63,19 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Laporan Bulanan</h3>
         <p class="text-gray-600 text-sm mb-4">Download laporan tiket per bulan</p>
 
-        <form action="{{ route('admin.export.excel') }}" method="GET" class="space-y-4">
+        <form action="{{ route('admin.export.excel') }}" method="GET" class="space-y-4 export-form">
             <input type="hidden" name="period" value="month">
             <div>
                 <label for="month" class="block text-sm font-medium text-gray-700 mb-2">Pilih Bulan</label>
-                <input type="month" name="date" id="month" value="{{ $currentMonth }}" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 transition-colors" required>
+                <input type="month" name="date" id="month" value="{{ $currentMonth }}" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 transition-colors" required pattern="\d{4}-\d{2}">
+                <p class="text-xs text-gray-500 mt-1">Format: YYYY-MM (contoh: 2024-01)</p>
             </div>
-            <button type="submit" class="w-full bg-green-600 text-white py-3 px-4 rounded-xl hover:bg-green-700 transition-colors font-semibold flex items-center justify-center">
+            <button type="submit" class="w-full bg-green-600 text-white py-3 px-4 rounded-xl hover:bg-green-700 transition-colors font-semibold flex items-center justify-center export-btn">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                Download Excel
+                <span class="btn-text">Download Excel</span>
+                <span class="btn-loading hidden">Memproses...</span>
             </button>
         </form>
     </div>
@@ -75,7 +92,7 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Laporan Tahunan</h3>
         <p class="text-gray-600 text-sm mb-4">Download laporan tiket per tahun</p>
 
-        <form action="{{ route('admin.export.excel') }}" method="GET" class="space-y-4">
+        <form action="{{ route('admin.export.excel') }}" method="GET" class="space-y-4 export-form">
             <input type="hidden" name="period" value="year">
             <div>
                 <label for="year" class="block text-sm font-medium text-gray-700 mb-2">Pilih Tahun</label>
@@ -88,15 +105,43 @@
                     @endforeach
                 </select>
             </div>
-            <button type="submit" class="w-full bg-purple-600 text-white py-3 px-4 rounded-xl hover:bg-purple-700 transition-colors font-semibold flex items-center justify-center">
+            <button type="submit" class="w-full bg-purple-600 text-white py-3 px-4 rounded-xl hover:bg-purple-700 transition-colors font-semibold flex items-center justify-center export-btn">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                Download Excel
+                <span class="btn-text">Download Excel</span>
+                <span class="btn-loading hidden">Memproses...</span>
             </button>
         </form>
     </div>
 </div>
+
+<!-- JavaScript untuk prevent double submission -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('.export-form');
+
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const btn = this.querySelector('.export-btn');
+                const btnText = this.querySelector('.btn-text');
+                const btnLoading = this.querySelector('.btn-loading');
+
+                // Disable button dan show loading
+                btn.disabled = true;
+                btnText.classList.add('hidden');
+                btnLoading.classList.remove('hidden');
+
+                // Optional: timeout untuk enable kembali jika terlalu lama
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btnText.classList.remove('hidden');
+                    btnLoading.classList.add('hidden');
+                }, 30000); // 30 seconds timeout
+            });
+        });
+    });
+</script>
 
 <!-- Informasi -->
 <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6">
@@ -109,8 +154,7 @@
         <div class="ml-3">
             <h3 class="text-lg font-semibold text-blue-800">Informasi Laporan</h3>
             <p class="text-blue-700 mt-1">
-                Laporan Excel akan berisi semua data tiket dalam periode yang dipilih, termasuk informasi detail seperti:
-                nomor tiket, tanggal, karyawan, company, branch, kategori, status, dan informasi penyelesaian.
+                Laporan Excel akan berisi semua data tiket dalam periode yang dipilih. Jika mengalami masalah, pastikan format tanggal sesuai dan coba kembali.
             </p>
         </div>
     </div>

@@ -279,7 +279,7 @@ class AdminController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $period = $request->get('period', 'month'); // week, month, year
+        $period = $request->get('period', 'month');
         $date = $request->get('date', now()->format('Y-m'));
 
         $filename = 'tickets_report_';

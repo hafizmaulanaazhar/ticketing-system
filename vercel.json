@@ -22,7 +22,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://ticketing-app-nine-phi.vercel.app",
+        "APP_URL": "ticketing-app-git-main-hafizs-projects-adb3b7af.vercel.app",
         "APP_KEY": "base64:YZ+3BcTGdCBEsC9LST97Kq/ooHaNYTs/NUaTMMzyaSw=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",

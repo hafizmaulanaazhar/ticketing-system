@@ -276,6 +276,8 @@ class AdminController extends Controller
             ->get();
         return view('admin.tickets.index', compact('tickets', 'users'));
     }
+    use Maatwebsite\Excel\Excel;
+
     public function exportExcel(Request $request)
     {
         try {
@@ -312,10 +314,17 @@ class AdminController extends Controller
                     $filename .= now()->format('F_Y') . '.xlsx';
             }
 
-            // Force in-memory processing
-            config(['excel.exports.temp_path' => null]);
+            // Use string output instead of file
+            $ticketsExport = new TicketsExport($startDate, $endDate);
 
-            return Excel::download(new TicketsExport($startDate, $endDate), $filename);
+            $excel = app(Excel::class);
+            $content = $excel->raw($ticketsExport, \Maatwebsite\Excel\Excel::XLSX);
+
+            return response()->make($content, 200, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Cache-Control' => 'no-cache, must-revalidate',
+            ]);
         } catch (\Exception $e) {
             \Log::error('Excel Export Error: ' . $e->getMessage());
             return back()->with('error', 'Gagal mengekspor data: ' . $e->getMessage());

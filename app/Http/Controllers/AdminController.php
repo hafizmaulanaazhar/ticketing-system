@@ -280,45 +280,69 @@ class AdminController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $period = $request->get('period', 'month');
-        $date = $request->get('date', now()->format('Y-m'));
-        $filename = 'tickets_report_';
+        try {
+            $period = $request->get('period', 'month');
+            $date = $request->get('date', now()->format('Y-m'));
+            $filename = 'tickets_report_';
 
-        switch ($period) {
-            case 'week':
-                $week = Carbon::parse($date);
-                $startDate = $week->startOfWeek()->format('Y-m-d');
-                $endDate = $week->endOfWeek()->format('Y-m-d');
-                $filename .= $startDate . '_to_' . $endDate . '.xlsx';
-                break;
+            switch ($period) {
+                case 'week':
+                    $week = Carbon::parse($date);
+                    $startDate = $week->startOfWeek()->format('Y-m-d');
+                    $endDate = $week->endOfWeek()->format('Y-m-d');
+                    $filename .= $startDate . '_to_' . $endDate . '.csv';
+                    break;
 
-            case 'month':
-                $month = Carbon::parse($date);
-                $startDate = $month->startOfMonth()->format('Y-m-d');
-                $endDate = $month->endOfMonth()->format('Y-m-d');
-                $filename .= $month->format('F_Y') . '.xlsx';
-                break;
+                case 'month':
+                    $month = Carbon::parse($date);
+                    $startDate = $month->startOfMonth()->format('Y-m-d');
+                    $endDate = $month->endOfMonth()->format('Y-m-d');
+                    $filename .= $month->format('F_Y') . '.csv';
+                    break;
 
-            case 'year':
-                $year = Carbon::createFromFormat('Y', $date);
-                $startDate = $year->startOfYear()->format('Y-m-d');
-                $endDate = $year->endOfYear()->format('Y-m-d');
-                $filename .= $year->format('Y') . '.xlsx';
-                break;
+                case 'year':
+                    $year = Carbon::createFromFormat('Y', $date);
+                    $startDate = $year->startOfYear()->format('Y-m-d');
+                    $endDate = $year->endOfYear()->format('Y-m-d');
+                    $filename .= $year->format('Y') . '.csv';
+                    break;
+            }
 
-            default:
-                $startDate = now()->startOfMonth()->format('Y-m-d');
-                $endDate = now()->endOfMonth()->format('Y-m-d');
-                $filename .= now()->format('F_Y') . '.xlsx';
+            $ticketsExport = new TicketsExport($startDate, $endDate);
+            $headings = $ticketsExport->headings();
+
+            $headers = [
+                'Content-Type' => 'text/csv; charset=utf-8',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Pragma' => 'no-cache',
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                'Expires' => '0'
+            ];
+
+            $callback = function () use ($ticketsExport, $headings) {
+                $file = fopen('php://output', 'w');
+
+                // Add BOM for Excel compatibility
+                fwrite($file, "\xEF\xBB\xBF");
+
+                // Write headers
+                fputcsv($file, $headings);
+
+                // Write data menggunakan chunking untuk memory efficiency
+                $ticketsExport->collection()->chunk(100, function ($tickets) use ($file, $ticketsExport) {
+                    foreach ($tickets as $ticket) {
+                        fputcsv($file, $ticketsExport->map($ticket));
+                    }
+                });
+
+                fclose($file);
+            };
+
+            return response()->stream($callback, 200, $headers);
+        } catch (\Exception $e) {
+            \Log::error('Export Error: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengekspor data: ' . $e->getMessage());
         }
-
-        return new StreamedResponse(function () use ($startDate, $endDate) {
-            echo Excel::raw(new TicketsExport($startDate, $endDate), \Maatwebsite\Excel\Excel::XLSX);
-        }, 200, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="tickets_report.xlsx"',
-            'Cache-Control' => 'no-cache, must-revalidate',
-        ]);
     }
 
     public function downloadReport()

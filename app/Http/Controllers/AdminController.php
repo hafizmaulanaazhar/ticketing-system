@@ -276,43 +276,50 @@ class AdminController extends Controller
             ->get();
         return view('admin.tickets.index', compact('tickets', 'users'));
     }
-
     public function exportExcel(Request $request)
     {
-        $period = $request->get('period', 'month');
-        $date = $request->get('date', now()->format('Y-m'));
+        try {
+            $period = $request->get('period', 'month');
+            $date = $request->get('date', now()->format('Y-m'));
 
-        $filename = 'tickets_report_';
+            $filename = 'tickets_report_';
 
-        switch ($period) {
-            case 'week':
-                $week = Carbon::parse($date);
-                $startDate = $week->startOfWeek()->format('Y-m-d');
-                $endDate = $week->endOfWeek()->format('Y-m-d');
-                $filename .= $startDate . '_to_' . $endDate . '.xlsx';
-                break;
+            switch ($period) {
+                case 'week':
+                    $week = Carbon::parse($date);
+                    $startDate = $week->startOfWeek()->format('Y-m-d');
+                    $endDate = $week->endOfWeek()->format('Y-m-d');
+                    $filename .= $startDate . '_to_' . $endDate . '.xlsx';
+                    break;
 
-            case 'month':
-                $month = Carbon::parse($date);
-                $startDate = $month->startOfMonth()->format('Y-m-d');
-                $endDate = $month->endOfMonth()->format('Y-m-d');
-                $filename .= $month->format('F_Y') . '.xlsx';
-                break;
+                case 'month':
+                    $month = Carbon::parse($date);
+                    $startDate = $month->startOfMonth()->format('Y-m-d');
+                    $endDate = $month->endOfMonth()->format('Y-m-d');
+                    $filename .= $month->format('F_Y') . '.xlsx';
+                    break;
 
-            case 'year':
-                $year = Carbon::createFromFormat('Y', $date);
-                $startDate = $year->startOfYear()->format('Y-m-d');
-                $endDate = $year->endOfYear()->format('Y-m-d');
-                $filename .= $year->format('Y') . '.xlsx';
-                break;
+                case 'year':
+                    $year = Carbon::createFromFormat('Y', $date);
+                    $startDate = $year->startOfYear()->format('Y-m-d');
+                    $endDate = $year->endOfYear()->format('Y-m-d');
+                    $filename .= $year->format('Y') . '.xlsx';
+                    break;
 
-            default:
-                $startDate = now()->startOfMonth()->format('Y-m-d');
-                $endDate = now()->endOfMonth()->format('Y-m-d');
-                $filename .= now()->format('F_Y') . '.xlsx';
+                default:
+                    $startDate = now()->startOfMonth()->format('Y-m-d');
+                    $endDate = now()->endOfMonth()->format('Y-m-d');
+                    $filename .= now()->format('F_Y') . '.xlsx';
+            }
+
+            // Force in-memory processing
+            config(['excel.exports.temp_path' => null]);
+
+            return Excel::download(new TicketsExport($startDate, $endDate), $filename);
+        } catch (\Exception $e) {
+            \Log::error('Excel Export Error: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengekspor data: ' . $e->getMessage());
         }
-
-        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
     }
 
     public function downloadReport()

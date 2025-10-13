@@ -312,8 +312,35 @@ class AdminController extends Controller
                 $filename .= now()->format('F_Y') . '.csv';
         }
 
-        // ✅ Gunakan writer CSV agar tidak membuat file sementara
-        return Excel::download(new TicketsExport($startDate, $endDate), $filename, \Maatwebsite\Excel\Excel::CSV);
+        // ✅ Ambil collection dari export yang sudah ada
+        $export = new TicketsExport($startDate, $endDate);
+        $collection = $export->collection();
+
+        // ✅ Stream langsung ke browser
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ];
+
+        $callback = function () use ($collection) {
+            $output = fopen('php://output', 'w');
+
+            // kalau class TicketsExport pakai headings()
+            if (method_exists($collection, 'headings')) {
+                fputcsv($output, $collection->headings());
+            } elseif (method_exists($collection, 'toArray') && !empty($collection->toArray())) {
+                // buat header otomatis dari array pertama
+                fputcsv($output, array_keys($collection->toArray()[0]));
+            }
+
+            foreach ($collection as $row) {
+                fputcsv($output, is_array($row) ? $row : $row->toArray());
+            }
+
+            fclose($output);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
 

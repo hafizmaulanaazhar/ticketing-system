@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Exports\TicketsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
+use Illuminate\Http\StreamedResponse;
 
 
 
@@ -313,17 +314,20 @@ class AdminController extends Controller
                     $filename .= now()->format('F_Y') . '.xlsx';
             }
 
-            // Use string output instead of file
             $ticketsExport = new TicketsExport($startDate, $endDate);
 
-            $excel = app(Excel::class);
-            $content = $excel->raw($ticketsExport, \Maatwebsite\Excel\Excel::XLSX);
-
-            return response()->make($content, 200, [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-                'Cache-Control' => 'no-cache, must-revalidate',
-            ]);
+            return new StreamedResponse(
+                function () use ($ticketsExport) {
+                    $excel = app()->make('excel');
+                    $excel->download($ticketsExport, 'filename.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+                },
+                200,
+                [
+                    'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                    'Cache-Control' => 'no-cache, must-revalidate',
+                ]
+            );
         } catch (\Exception $e) {
             \Log::error('Excel Export Error: ' . $e->getMessage());
             return back()->with('error', 'Gagal mengekspor data: ' . $e->getMessage());

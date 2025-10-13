@@ -289,32 +289,31 @@ class AdminController extends Controller
                 $week = Carbon::parse($date);
                 $startDate = $week->startOfWeek()->format('Y-m-d');
                 $endDate = $week->endOfWeek()->format('Y-m-d');
-                $filename .= $startDate . '_to_' . $endDate . '.xlsx';
+                $filename .= $startDate . '_to_' . $endDate . '.csv';
                 break;
 
             case 'month':
                 $month = Carbon::parse($date);
                 $startDate = $month->startOfMonth()->format('Y-m-d');
                 $endDate = $month->endOfMonth()->format('Y-m-d');
-                $filename .= $month->format('F_Y') . '.xlsx';
+                $filename .= $month->format('F_Y') . '.csv';
                 break;
 
             case 'year':
                 $year = Carbon::createFromFormat('Y', $date);
                 $startDate = $year->startOfYear()->format('Y-m-d');
                 $endDate = $year->endOfYear()->format('Y-m-d');
-                $filename .= $year->format('Y') . '.xlsx';
+                $filename .= $year->format('Y') . '.csv';
                 break;
 
             default:
                 $startDate = now()->startOfMonth()->format('Y-m-d');
                 $endDate = now()->endOfMonth()->format('Y-m-d');
-                $filename .= now()->format('F_Y') . '.xlsx';
+                $filename .= now()->format('F_Y') . '.csv';
         }
 
-        config(['excel.exports.temp_path' => sys_get_temp_dir()]);
-
-        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
+        // ✅ Gunakan writer CSV agar tidak membuat file sementara
+        return Excel::download(new TicketsExport($startDate, $endDate), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
 
 

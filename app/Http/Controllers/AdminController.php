@@ -9,17 +9,18 @@ use App\Models\User;
 use App\Exports\TicketsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
+        // Total tickets
         $totalTickets = Ticket::count();
         $openTickets = Ticket::where('ticket_type', 'open')->count();
         $closedTickets = Ticket::where('ticket_type', 'close')->count();
 
+        // Tickets per hour
         $ticketsPerHour = Ticket::select(
             DB::raw('HOUR(jam) as hour'),
             DB::raw('COUNT(*) as count')
@@ -277,8 +278,9 @@ class AdminController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $period = $request->get('period', 'month');
+        $period = $request->get('period', 'month'); // week, month, year
         $date = $request->get('date', now()->format('Y-m'));
+
         $filename = 'tickets_report_';
 
         switch ($period) {
@@ -309,14 +311,7 @@ class AdminController extends Controller
                 $filename .= now()->format('F_Y') . '.xlsx';
         }
 
-        // 🚀 Gunakan Excel::raw() agar tidak menulis file ke disk
-        $excelContent = Excel::raw(new TicketsExport($startDate, $endDate), \Maatwebsite\Excel\Excel::XLSX);
-
-        return response($excelContent, 200, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Cache-Control' => 'max-age=0',
-        ]);
+        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
     }
 
     public function downloadReport()

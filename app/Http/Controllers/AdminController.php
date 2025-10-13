@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Exports\TicketsExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Carbon\Carbon;
 
 
@@ -280,79 +279,51 @@ class AdminController extends Controller
 
     public function exportExcel(Request $request)
     {
-        try {
-            $period = $request->get('period', 'month');
-            $date = $request->get('date', now()->format('Y-m'));
-            $filename = 'tickets_report_';
+        $period = $request->get('period', 'month');
+        $date = $request->get('date', now()->format('Y-m'));
 
-            switch ($period) {
-                case 'week':
-                    $week = Carbon::parse($date);
-                    $startDate = $week->startOfWeek()->format('Y-m-d');
-                    $endDate = $week->endOfWeek()->format('Y-m-d');
-                    $filename .= $startDate . '_to_' . $endDate . '.csv';
-                    break;
+        $filename = 'tickets_report_';
 
-                case 'month':
-                    $month = Carbon::parse($date);
-                    $startDate = $month->startOfMonth()->format('Y-m-d');
-                    $endDate = $month->endOfMonth()->format('Y-m-d');
-                    $filename .= $month->format('F_Y') . '.csv';
-                    break;
+        switch ($period) {
+            case 'week':
+                $week = Carbon::parse($date);
+                $startDate = $week->startOfWeek()->format('Y-m-d');
+                $endDate = $week->endOfWeek()->format('Y-m-d');
+                $filename .= $startDate . '_to_' . $endDate . '.xlsx';
+                break;
 
-                case 'year':
-                    $year = Carbon::createFromFormat('Y', $date);
-                    $startDate = $year->startOfYear()->format('Y-m-d');
-                    $endDate = $year->endOfYear()->format('Y-m-d');
-                    $filename .= $year->format('Y') . '.csv';
-                    break;
-            }
+            case 'month':
+                $month = Carbon::parse($date);
+                $startDate = $month->startOfMonth()->format('Y-m-d');
+                $endDate = $month->endOfMonth()->format('Y-m-d');
+                $filename .= $month->format('F_Y') . '.xlsx';
+                break;
 
-            $ticketsExport = new TicketsExport($startDate, $endDate);
-            $headings = $ticketsExport->headings();
+            case 'year':
+                $year = Carbon::createFromFormat('Y', $date);
+                $startDate = $year->startOfYear()->format('Y-m-d');
+                $endDate = $year->endOfYear()->format('Y-m-d');
+                $filename .= $year->format('Y') . '.xlsx';
+                break;
 
-            $headers = [
-                'Content-Type' => 'text/csv; charset=utf-8',
-                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-                'Pragma' => 'no-cache',
-                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-                'Expires' => '0'
-            ];
-
-            $callback = function () use ($ticketsExport, $headings) {
-                $file = fopen('php://output', 'w');
-
-                // Add BOM for Excel compatibility
-                fwrite($file, "\xEF\xBB\xBF");
-
-                // Write headers
-                fputcsv($file, $headings);
-
-                // Write data menggunakan chunking untuk memory efficiency
-                $ticketsExport->collection()->chunk(100, function ($tickets) use ($file, $ticketsExport) {
-                    foreach ($tickets as $ticket) {
-                        fputcsv($file, $ticketsExport->map($ticket));
-                    }
-                });
-
-                fclose($file);
-            };
-
-            return response()->stream($callback, 200, $headers);
-        } catch (\Exception $e) {
-            \Log::error('Export Error: ' . $e->getMessage());
-            return back()->with('error', 'Gagal mengekspor data: ' . $e->getMessage());
+            default:
+                $startDate = now()->startOfMonth()->format('Y-m-d');
+                $endDate = now()->endOfMonth()->format('Y-m-d');
+                $filename .= now()->format('F_Y') . '.xlsx';
         }
+
+        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
     }
 
     public function downloadReport()
     {
-        $years = DB::table('tickets')
-            ->select(DB::raw('YEAR(created_at) as year'))
+        // Get available years for filter
+        $years = Ticket::select(DB::raw('YEAR(created_at) as year'))
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
 
+        // Get current week and month for default values
         $currentWeek = now()->format('Y-\WW');
         $currentMonth = now()->format('Y-m');
         $currentYear = now()->format('Y');

@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-800">Download Laporan CSV</h1>
-    <p class="text-gray-600 mt-2">Download laporan tiket dalam format CSV (dapat dibuka di Excel)</p>
+    <h1 class="text-3xl font-bold text-gray-800">Download Laporan Excel</h1>
+    <p class="text-gray-600 mt-2">Download laporan tiket dalam format Excel</p>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -31,7 +31,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                Download CSV
+                Download Excel
             </button>
         </form>
     </div>
@@ -58,7 +58,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                Download CSV
+                Download Excel
             </button>
         </form>
     </div>
@@ -92,7 +92,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
-                Download CSV
+                Download Excel
             </button>
         </form>
     </div>
@@ -109,11 +109,8 @@
         <div class="ml-3">
             <h3 class="text-lg font-semibold text-blue-800">Informasi Laporan</h3>
             <p class="text-blue-700 mt-1">
-                Laporan CSV akan berisi semua data tiket dalam periode yang dipilih, termasuk informasi detail seperti:
-                nomor tiket, tipe tiket, tipe komplain, tanggal, jam, nama karyawan, company, branch, kategori, status,
-                priority, application/hardware, root cause, solving, dan informasi lengkap lainnya.
-                <br><br>
-                <strong>Catatan:</strong> File CSV dapat dibuka di Microsoft Excel dengan format yang rapi.
+                Laporan Excel akan berisi semua data tiket dalam periode yang dipilih, termasuk informasi detail seperti:
+                nomor tiket, tanggal, karyawan, company, branch, kategori, status, dan informasi penyelesaian.
             </p>
         </div>
     </div>

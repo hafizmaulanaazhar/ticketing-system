@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Exports\TicketsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Carbon\Carbon;
 
 
@@ -281,7 +282,6 @@ class AdminController extends Controller
     {
         $period = $request->get('period', 'month');
         $date = $request->get('date', now()->format('Y-m'));
-
         $filename = 'tickets_report_';
 
         switch ($period) {
@@ -312,18 +312,23 @@ class AdminController extends Controller
                 $filename .= now()->format('F_Y') . '.xlsx';
         }
 
-        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
+        return new StreamedResponse(function () use ($startDate, $endDate) {
+            echo Excel::raw(new TicketsExport($startDate, $endDate), \Maatwebsite\Excel\Excel::XLSX);
+        }, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="tickets_report.xlsx"',
+            'Cache-Control' => 'no-cache, must-revalidate',
+        ]);
     }
 
     public function downloadReport()
     {
-        // Get available years for filter
-        $years = Ticket::select(DB::raw('YEAR(created_at) as year'))
+        $years = DB::table('tickets')
+            ->select(DB::raw('YEAR(created_at) as year'))
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
 
-        // Get current week and month for default values
         $currentWeek = now()->format('Y-\WW');
         $currentMonth = now()->format('Y-m');
         $currentYear = now()->format('Y');

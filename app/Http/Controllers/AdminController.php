@@ -282,43 +282,39 @@ class AdminController extends Controller
         $period = $request->get('period', 'month');
         $date = $request->get('date', now()->format('Y-m'));
 
+        $filename = 'tickets_report_';
+
         switch ($period) {
+            case 'week':
+                $week = Carbon::parse($date);
+                $startDate = $week->startOfWeek()->format('Y-m-d');
+                $endDate = $week->endOfWeek()->format('Y-m-d');
+                $filename .= $startDate . '_to_' . $endDate . '.xlsx';
+                break;
+
             case 'month':
                 $month = Carbon::parse($date);
                 $startDate = $month->startOfMonth()->format('Y-m-d');
                 $endDate = $month->endOfMonth()->format('Y-m-d');
-                $filename = 'tickets_report_' . $month->format('F_Y') . '.csv';
+                $filename .= $month->format('F_Y') . '.xlsx';
                 break;
+
+            case 'year':
+                $year = Carbon::createFromFormat('Y', $date);
+                $startDate = $year->startOfYear()->format('Y-m-d');
+                $endDate = $year->endOfYear()->format('Y-m-d');
+                $filename .= $year->format('Y') . '.xlsx';
+                break;
+
             default:
                 $startDate = now()->startOfMonth()->format('Y-m-d');
                 $endDate = now()->endOfMonth()->format('Y-m-d');
-                $filename = 'tickets_report_' . now()->format('F_Y') . '.csv';
+                $filename .= now()->format('F_Y') . '.xlsx';
         }
 
-        $tickets = Ticket::whereBetween('created_at', [$startDate, $endDate])->get();
+        config(['excel.exports.temp_path' => sys_get_temp_dir()]);
 
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
-        ];
-
-        $callback = function () use ($tickets) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['ID', 'Subject', 'Status', 'Created At']);
-
-            foreach ($tickets as $ticket) {
-                fputcsv($file, [
-                    $ticket->id,
-                    $ticket->subject,
-                    $ticket->status,
-                    $ticket->created_at,
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
     }
 
 

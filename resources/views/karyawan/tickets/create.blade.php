@@ -245,9 +245,21 @@
             </div>
 
             <!-- Nama Helpdesk -->
-            <div class="md:col-span-2">
+            <div class="md:col-span-2 mb-4">
                 <label for="nama_helpdesk" class="block text-sm font-medium text-gray-700 mb-2">Nama Helpdesk *</label>
-                <input type="text" name="nama_helpdesk" id="nama_helpdesk" value="{{ old('nama_helpdesk') }}" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select name="nama_helpdesk" id="nama_helpdesk" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- Pilih Nama Helpdesk --</option>
+                    <option value="Anisya" {{ old('nama_helpdesk') == 'Anisya' ? 'selected' : '' }}>Anisya</option>
+                    <option value="Nisha" {{ old('nama_helpdesk') == 'Nisha' ? 'selected' : '' }}>Nisha</option>
+                    <option value="Benny" {{ old('nama_helpdesk') == 'Benny' ? 'selected' : '' }}>Benny</option>
+                    <option value="Faisal" {{ old('nama_helpdesk') == 'Faisal' ? 'selected' : '' }}>Faisal</option>
+                    <option value="Patar" {{ old('nama_helpdesk') == 'Patar' ? 'selected' : '' }}>Patar</option>
+                    <option value="Ridwan" {{ old('nama_helpdesk') == 'Ridwan' ? 'selected' : '' }}>Ridwan</option>
+                    <option value="Rizky" {{ old('nama_helpdesk') == 'Rizky' ? 'selected' : '' }}>Rizky</option>
+                    <option value="Hafiz" {{ old('nama_helpdesk') == 'Hafiz' ? 'selected' : '' }}>Hafiz</option>
+                    <option value="Rofina" {{ old('nama_helpdesk') == 'Rofina' ? 'selected' : '' }}>Rofina</option>
+                </select>
+
                 @error('nama_helpdesk')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror

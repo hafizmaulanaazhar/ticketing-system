@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Exports\TicketsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 
@@ -280,13 +279,11 @@ class AdminController extends Controller
 
     public function exportExcel(Request $request)
     {
-        ini_set('memory_limit', '256M'); // Tambah limit RAM biar aman di Vercel
-
         $period = $request->get('period', 'month'); // week, month, year
         $date = $request->get('date', now()->format('Y-m'));
+
         $filename = 'tickets_report_';
 
-        // 🔹 Tentukan tanggal awal & akhir berdasarkan periode
         switch ($period) {
             case 'week':
                 $week = Carbon::parse($date);
@@ -315,16 +312,7 @@ class AdminController extends Controller
                 $filename .= now()->format('F_Y') . '.xlsx';
         }
 
-        // 🔹 Generate Excel ke memory (tanpa menyimpan file)
-        $excelBinary = Excel::raw(new TicketsExport($startDate, $endDate), \Maatwebsite\Excel\Excel::XLSX);
-
-        // 🔹 Stream ke browser langsung
-        return new StreamedResponse(function () use ($excelBinary) {
-            echo $excelBinary;
-        }, 200, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ]);
+        return Excel::download(new TicketsExport($startDate, $endDate), $filename);
     }
 
     public function downloadReport()

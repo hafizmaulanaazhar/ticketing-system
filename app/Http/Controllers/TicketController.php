@@ -63,7 +63,19 @@ class TicketController extends Controller
             'Wifi Management'
         ];
 
-        return view('karyawan.tickets.create', compact('subCategories'));
+        $namaHelpdesk = [
+            'Anisya',
+            'Nisha',
+            'Benny',
+            'Faisal',
+            'Patar',
+            'Ridwan',
+            'Rizky',
+            'Hafiz',
+            'Rofina'
+        ];
+
+        return view('karyawan.tickets.create', compact('subCategories', 'namaHelpdesk'));
     }
 
     public function store(Request $request)
@@ -92,7 +104,7 @@ class TicketController extends Controller
             'assigned' => 'required|in:Helpdesk,Development,Marketing,Tim Support,Gudang,Tim PAC',
             'pic_merchant' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
-            'nama_helpdesk' => 'required|string|max:255',
+            'nama_helpdesk' => 'required|in:Anisya,Nisha,Benny,Faisal,Patar,Ridwan,Rizky,Hafiz,Rofina',
         ]);
 
         $validated['ticket_number'] = Ticket::generateTicketNumber();
@@ -158,7 +170,19 @@ class TicketController extends Controller
             'Wifi Management'
         ];
 
-        return view('karyawan.tickets.edit', compact('ticket', 'subCategories'));
+        $namaHelpdesk = [
+            'Anisya',
+            'Nisha',
+            'Benny',
+            'Faisal',
+            'Patar',
+            'Ridwan',
+            'Rizky',
+            'Hafiz',
+            'Rofina'
+        ];
+
+        return view('karyawan.tickets.edit', compact('ticket', 'subCategories', 'namaHelpdesk'));
     }
 
     public function update(Request $request, Ticket $ticket)
@@ -191,7 +215,7 @@ class TicketController extends Controller
             'assigned' => 'required|in:Helpdesk,Development,Marketing,Tim Support,Gudang,Tim PAC',
             'pic_merchant' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
-            'nama_helpdesk' => 'required|string|max:255',
+            'nama_helpdesk' => 'required|in:Anisya,Nisha,Benny,Faisal,Patar,Ridwan,Rizky,Hafiz,Rofina',
         ]);
 
         $ticket->update($validated);

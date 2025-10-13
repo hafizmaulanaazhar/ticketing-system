@@ -276,7 +276,6 @@ class AdminController extends Controller
             ->get();
         return view('admin.tickets.index', compact('tickets', 'users'));
     }
-    use Maatwebsite\Excel\Excel;
 
     public function exportExcel(Request $request)
     {

@@ -312,29 +312,30 @@ class AdminController extends Controller
                 $filename .= now()->format('F_Y') . '.csv';
         }
 
-        // ✅ Ambil collection dari export yang sudah ada
         $export = new TicketsExport($startDate, $endDate);
         $collection = $export->collection();
 
-        // ✅ Stream langsung ke browser
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename={$filename}",
         ];
 
         $callback = function () use ($collection) {
             $output = fopen('php://output', 'w');
 
-            // kalau class TicketsExport pakai headings()
+            // Tulis BOM agar Excel tahu ini UTF-8
+            fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Header kolom
             if (method_exists($collection, 'headings')) {
-                fputcsv($output, $collection->headings());
+                fputcsv($output, $collection->headings(), ';');
             } elseif (method_exists($collection, 'toArray') && !empty($collection->toArray())) {
-                // buat header otomatis dari array pertama
-                fputcsv($output, array_keys($collection->toArray()[0]));
+                fputcsv($output, array_keys($collection->toArray()[0]), ';');
             }
 
+            // Data baris
             foreach ($collection as $row) {
-                fputcsv($output, is_array($row) ? $row : $row->toArray());
+                fputcsv($output, is_array($row) ? $row : $row->toArray(), ';');
             }
 
             fclose($output);

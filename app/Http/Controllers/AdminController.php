@@ -321,13 +321,11 @@ class AdminController extends Controller
 
     public function downloadReport()
     {
-        // Get available years for filter
         $years = Ticket::select(DB::raw('YEAR(created_at) as year'))
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
 
-        // Get current week and month for default values
         $currentWeek = now()->format('Y-\WW');
         $currentMonth = now()->format('Y-m');
         $currentYear = now()->format('Y');

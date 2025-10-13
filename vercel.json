@@ -3,7 +3,13 @@
     "framework": null,
     "functions": {
         "api/index.php": {
-            "runtime": "vercel-php@0.7.4"
+            "runtime": "vercel-php@0.7.4",
+            "config": {
+                "phpExtensions": [
+                    "zip",
+                    "xmlwriter"
+                ]
+            }
         }
     },
     "routes": [
@@ -22,7 +28,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "",
+        "APP_URL": "https://ticketing-app-nine-phi.vercel.app",
         "APP_KEY": "base64:YZ+3BcTGdCBEsC9LST97Kq/ooHaNYTs/NUaTMMzyaSw=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
@@ -37,6 +43,7 @@
         "DB_HOST": "4mg4re.h.filess.io",
         "DB_PORT": "3307",
         "DB_DATABASE": "Ticket_beelonger",
-        "DB_USERNAME": "Ticket_beelonger"
+        "DB_USERNAME": "Ticket_beelonger",
+        "DB_PASSWORD": "71a5afa2b9a8bd51982adcea83ce0e92dbb0a2b6"
     }
 }

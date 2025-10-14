@@ -157,88 +157,85 @@
      </div>
  </div>
 
- <!-- Combined Reports Dashboard -->
+ <!-- Combined Reports Dashboard - 3 Rows x 3 Grids -->
  <div class="space-y-6">
-     <!-- Main Grid - 3 Columns for better space utilization -->
+     <!-- Row 1: Time-based Reports -->
      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-         <!-- Time-based Reports -->
-         <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-             <!-- Tickets by Day -->
-             <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3">
-                     <h3 class="text-lg font-bold text-white flex items-center">
-                         <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                         </svg>
-                         Tiket Berdasarkan Hari
-                     </h3>
-                 </div>
-                 <div class="overflow-x-auto max-h-80">
-                     <table class="w-full text-sm text-gray-700">
-                         <thead class="bg-gray-50 text-gray-600 sticky top-0">
-                             <tr>
-                                 <th class="py-2 px-3 text-left font-semibold">Hari</th>
-                                 <th class="py-2 px-3 text-right font-semibold">Total</th>
-                             </tr>
-                         </thead>
-                         <tbody>
-                             <tr class="bg-blue-50 font-bold">
-                                 <td class="py-2 px-3">Total</td>
-                                 <td class="py-2 px-3 text-right text-blue-600">{{ $totalTicketsByDay }}</td>
-                             </tr>
-                             @foreach($ticketsByDay as $report)
-                             <tr class="border-t border-gray-200 hover:bg-gray-50">
-                                 <td class="py-2 px-3">
-                                     {{ [
-                                        'Monday' => 'Senin',
-                                        'Tuesday' => 'Selasa',
-                                        'Wednesday' => 'Rabu',
-                                        'Thursday' => 'Kamis',
-                                        'Friday' => 'Jumat',
-                                        'Saturday' => 'Sabtu',
-                                        'Sunday' => 'Minggu'
-                                    ][$report->day_name] ?? $report->day_name }}
-                                 </td>
-                                 <td class="py-2 px-3 text-right font-medium">{{ $report->total }}</td>
-                             </tr>
-                             @endforeach
-                         </tbody>
-                     </table>
-                 </div>
+         <!-- Tickets by Day -->
+         <div class="bg-white rounded-xl shadow-md overflow-hidden">
+             <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3">
+                 <h3 class="text-lg font-bold text-white flex items-center">
+                     <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                     </svg>
+                     Tiket Berdasarkan Hari
+                 </h3>
              </div>
+             <div class="overflow-x-auto max-h-80">
+                 <table class="w-full text-sm text-gray-700">
+                     <thead class="bg-gray-50 text-gray-600 sticky top-0">
+                         <tr>
+                             <th class="py-2 px-3 text-left font-semibold">Hari</th>
+                             <th class="py-2 px-3 text-right font-semibold">Total</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr class="bg-blue-50 font-bold">
+                             <td class="py-2 px-3">Total</td>
+                             <td class="py-2 px-3 text-right text-blue-600">{{ $totalTicketsByDay }}</td>
+                         </tr>
+                         @foreach($ticketsByDay as $report)
+                         <tr class="border-t border-gray-200 hover:bg-gray-50">
+                             <td class="py-2 px-3">
+                                 {{ [
+                                    'Monday' => 'Senin',
+                                    'Tuesday' => 'Selasa',
+                                    'Wednesday' => 'Rabu',
+                                    'Thursday' => 'Kamis',
+                                    'Friday' => 'Jumat',
+                                    'Saturday' => 'Sabtu',
+                                    'Sunday' => 'Minggu'
+                                ][$report->day_name] ?? $report->day_name }}
+                             </td>
+                             <td class="py-2 px-3 text-right font-medium">{{ $report->total }}</td>
+                         </tr>
+                         @endforeach
+                     </tbody>
+                 </table>
+             </div>
+         </div>
 
-             <!-- Tickets by Hour Range -->
-             <div class="bg-white rounded-xl shadow-md overflow-hidden">
-                 <div class="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-3">
-                     <h3 class="text-lg font-bold text-white flex items-center">
-                         <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                         </svg>
-                         Tiket Berdasarkan Jam
-                     </h3>
-                 </div>
-                 <div class="overflow-x-auto max-h-80">
-                     <table class="w-full text-sm text-gray-700">
-                         <thead class="bg-gray-50 text-gray-600 sticky top-0">
-                             <tr>
-                                 <th class="py-2 px-3 text-left font-semibold">Rentang Waktu</th>
-                                 <th class="py-2 px-3 text-right font-semibold">Total</th>
-                             </tr>
-                         </thead>
-                         <tbody>
-                             <tr class="bg-blue-50 font-bold">
-                                 <td class="py-2 px-3">Total</td>
-                                 <td class="py-2 px-3 text-right text-blue-600">{{ $totalTicketsByHourRange }}</td>
-                             </tr>
-                             @foreach($ticketsByHourRange as $report)
-                             <tr class="border-t border-gray-200 hover:bg-gray-50">
-                                 <td class="py-2 px-3">{{ $report->hour_range }}</td>
-                                 <td class="py-2 px-3 text-right font-medium">{{ $report->total }}</td>
-                             </tr>
-                             @endforeach
-                         </tbody>
-                     </table>
-                 </div>
+         <!-- Tickets by Hour Range -->
+         <div class="bg-white rounded-xl shadow-md overflow-hidden">
+             <div class="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-3">
+                 <h3 class="text-lg font-bold text-white flex items-center">
+                     <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                     </svg>
+                     Tiket Berdasarkan Jam
+                 </h3>
+             </div>
+             <div class="overflow-x-auto max-h-80">
+                 <table class="w-full text-sm text-gray-700">
+                     <thead class="bg-gray-50 text-gray-600 sticky top-0">
+                         <tr>
+                             <th class="py-2 px-3 text-left font-semibold">Rentang Waktu</th>
+                             <th class="py-2 px-3 text-right font-semibold">Total</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr class="bg-blue-50 font-bold">
+                             <td class="py-2 px-3">Total</td>
+                             <td class="py-2 px-3 text-right text-blue-600">{{ $totalTicketsByHourRange }}</td>
+                         </tr>
+                         @foreach($ticketsByHourRange as $report)
+                         <tr class="border-t border-gray-200 hover:bg-gray-50">
+                             <td class="py-2 px-3">{{ $report->hour_range }}</td>
+                             <td class="py-2 px-3 text-right font-medium">{{ $report->total }}</td>
+                         </tr>
+                         @endforeach
+                     </tbody>
+                 </table>
              </div>
          </div>
 
@@ -277,8 +274,8 @@
          </div>
      </div>
 
-     <!-- Status Reports - 2 Columns -->
-     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+     <!-- Row 2: Status Reports -->
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
          <!-- Category Reports -->
          <div class="bg-white rounded-xl shadow-md overflow-hidden">
              <div class="bg-gradient-to-r from-teal-500 to-teal-600 px-4 py-3">
@@ -352,10 +349,48 @@
                  </table>
              </div>
          </div>
+
+         <!-- Application Bugs Reports -->
+         <div class="bg-white rounded-xl shadow-md overflow-hidden">
+             <div class="bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-3">
+                 <h3 class="text-lg font-bold text-white flex items-center">
+                     <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
+                         </path>
+                     </svg>
+                     Application Bugs
+                 </h3>
+             </div>
+             <div class="overflow-x-auto max-h-80">
+                 <table class="w-full text-sm text-gray-700">
+                     <thead class="bg-gray-50 text-gray-600 sticky top-0">
+                         <tr>
+                             <th class="py-2 px-3 text-left font-semibold">Aplikasi</th>
+                             <th class="py-2 px-3 text-right font-semibold text-red-500">Open</th>
+                             <th class="py-2 px-3 text-right font-semibold text-green-500">Close</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr class="bg-blue-50 font-bold">
+                             <td class="py-2 px-3">Total</td>
+                             <td class="py-2 px-3 text-right text-red-600">{{ $totals['open'] }}</td>
+                             <td class="py-2 px-3 text-right text-green-600">{{ $totals['close'] }}</td>
+                         </tr>
+                         @foreach($applications as $report)
+                         <tr class="border-t border-gray-200 hover:bg-gray-50">
+                             <td class="py-2 px-3 font-medium">{{ $report->application ?: 'Tidak ada Aplikasi' }}</td>
+                             <td class="py-2 px-3 text-right text-red-500 font-medium">{{ $report->open_count }}</td>
+                             <td class="py-2 px-3 text-right text-green-500 font-medium">{{ $report->close_count }}</td>
+                         </tr>
+                         @endforeach
+                     </tbody>
+                 </table>
+             </div>
+         </div>
      </div>
 
-     <!-- Additional Reports - 2 Columns -->
-     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+     <!-- Row 3: Additional Reports -->
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
          <!-- Unresolved Bugs by Month -->
          <div class="bg-white rounded-xl shadow-md overflow-hidden">
              <div class="bg-gradient-to-r from-red-500 to-red-600 px-4 py-3">
@@ -419,43 +454,25 @@
                  </table>
              </div>
          </div>
-     </div>
 
-     <!-- Application Bugs Reports - Full Width -->
-     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-         <div class="bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-3">
-             <h3 class="text-lg font-bold text-white flex items-center">
-                 <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
-                     </path>
-                 </svg>
-                 Laporan per Application Bugs
-             </h3>
-         </div>
-         <div class="overflow-x-auto max-h-80">
-             <table class="w-full text-sm text-gray-700">
-                 <thead class="bg-gray-50 text-gray-600 sticky top-0">
-                     <tr>
-                         <th class="py-2 px-3 text-left font-semibold">Aplikasi</th>
-                         <th class="py-2 px-3 text-right font-semibold text-red-500">Open</th>
-                         <th class="py-2 px-3 text-right font-semibold text-green-500">Close</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     <tr class="bg-blue-50 font-bold">
-                         <td class="py-2 px-3">Total</td>
-                         <td class="py-2 px-3 text-right text-red-600">{{ $totals['open'] }}</td>
-                         <td class="py-2 px-3 text-right text-green-600">{{ $totals['close'] }}</td>
-                     </tr>
-                     @foreach($applications as $report)
-                     <tr class="border-t border-gray-200 hover:bg-gray-50">
-                         <td class="py-2 px-3 font-medium">{{ $report->application ?: 'Tidak ada Aplikasi' }}</td>
-                         <td class="py-2 px-3 text-right text-red-500 font-medium">{{ $report->open_count }}</td>
-                         <td class="py-2 px-3 text-right text-green-500 font-medium">{{ $report->close_count }}</td>
-                     </tr>
-                     @endforeach
-                 </tbody>
-             </table>
+         <!-- Empty Grid for Future Use / Summary -->
+         <div class="bg-white rounded-xl shadow-md overflow-hidden border-2 border-dashed border-gray-300">
+             <div class="bg-gradient-to-r from-gray-400 to-gray-500 px-4 py-3">
+                 <h3 class="text-lg font-bold text-white flex items-center">
+                     <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                     </svg>
+                     Tambahkan Laporan
+                 </h3>
+             </div>
+             <div class="flex items-center justify-center h-48 text-gray-500">
+                 <div class="text-center">
+                     <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                     </svg>
+                     <p class="text-sm">Grid tambahan untuk laporan lainnya</p>
+                 </div>
+             </div>
          </div>
      </div>
  </div>

@@ -39,7 +39,7 @@ class TicketsExport implements FromCollection, WithHeadings, WithMapping, WithSt
             'Tipe Komplain',
             'Tanggal',
             'Jam',
-            'Nama Karyawan',
+            'Nama Akun',
             'Source',
             'Company',
             'Branch',

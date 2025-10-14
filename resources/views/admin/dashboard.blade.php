@@ -157,274 +157,287 @@
      </div>
  </div>
 
- <!-- Detailed Reports Grid -->
- <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-     <!-- Tickets by Day -->
-     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-         <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
-             <h3 class="text-xl font-bold text-white flex items-center">
-                 <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                 </svg>
-                 Tiket Berdasarkan Hari
-             </h3>
-         </div>
-         <div class="overflow-x-auto">
-             <table class="w-full text-gray-700">
-                 <thead class="bg-gray-50 text-gray-600 text-sm">
-                     <tr>
-                         <th class="py-3 px-4 text-left font-semibold">Hari</th>
-                         <th class="py-3 px-4 text-right font-semibold">Total Tiket</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     <tr class="bg-blue-50 font-bold">
-                         <td class="py-3 px-4">Total</td>
-                         <td class="py-3 px-4 text-right text-blue-600">{{ $totalTicketsByDay }}</td>
-                     </tr>
-                     @foreach($ticketsByDay as $report)
-                     <tr class="border-t border-gray-200 hover:bg-gray-50">
-                         <td class="py-3 px-4">
-                             {{ [
-                                'Monday' => 'Senin',
-                                'Tuesday' => 'Selasa',
-                                'Wednesday' => 'Rabu',
-                                'Thursday' => 'Kamis',
-                                'Friday' => 'Jumat',
-                                'Saturday' => 'Sabtu',
-                                'Sunday' => 'Minggu'
-                            ][$report->day_name] ?? $report->day_name }}
-                         </td>
-                         <td class="py-3 px-4 text-right font-medium">{{ $report->total }}</td>
-                     </tr>
-                     @endforeach
-                 </tbody>
-             </table>
-         </div>
+ <div class="max-w-7xl mx-auto space-y-6">
+     <!-- Header -->
+     <div class="bg-white rounded-xl shadow-md p-6">
+         <h1 class="text-2xl font-bold text-gray-800">Dashboard Laporan Tiket</h1>
+         <p class="text-gray-600">Ringkasan statistik dan laporan tiket harian</p>
      </div>
 
-     <!-- Tickets by Hour Range -->
-     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-         <div class="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
-             <h3 class="text-xl font-bold text-white flex items-center">
-                 <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                 </svg>
-                 Tiket Berdasarkan Jam
-             </h3>
+     <!-- Grid Utama - 3 Kolom -->
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+         <!-- Kolom 1: Laporan Waktu -->
+         <div class="space-y-6">
+             <!-- Tickets by Day -->
+             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3">
+                     <h3 class="text-lg font-bold text-white flex items-center">
+                         <svg class="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                         </svg>
+                         Tiket Berdasarkan Hari
+                     </h3>
+                 </div>
+                 <div class="overflow-x-auto">
+                     <table class="w-full text-sm text-gray-700">
+                         <thead class="bg-gray-50 text-gray-600">
+                             <tr>
+                                 <th class="py-2 px-3 text-left font-semibold">Hari</th>
+                                 <th class="py-2 px-3 text-right font-semibold">Total</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr class="bg-blue-50 font-bold">
+                                 <td class="py-2 px-3">Total</td>
+                                 <td class="py-2 px-3 text-right text-blue-600">150</td>
+                             </tr>
+                             <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                 <td class="py-2 px-3">Senin</td>
+                                 <td class="py-2 px-3 text-right font-medium">25</td>
+                             </tr>
+                             <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                 <td class="py-2 px-3">Selasa</td>
+                                 <td class="py-2 px-3 text-right font-medium">30</td>
+                             </tr>
+                             <!-- Data hari lainnya -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+
+             <!-- Tickets by Hour Range -->
+             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                 <div class="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-3">
+                     <h3 class="text-lg font-bold text-white flex items-center">
+                         <svg class="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                         </svg>
+                         Tiket Berdasarkan Jam
+                     </h3>
+                 </div>
+                 <div class="overflow-x-auto">
+                     <table class="w-full text-sm text-gray-700">
+                         <thead class="bg-gray-50 text-gray-600">
+                             <tr>
+                                 <th class="py-2 px-3 text-left font-semibold">Rentang Waktu</th>
+                                 <th class="py-2 px-3 text-right font-semibold">Total</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr class="bg-blue-50 font-bold">
+                                 <td class="py-2 px-3">Total</td>
+                                 <td class="py-2 px-3 text-right text-blue-600">150</td>
+                             </tr>
+                             <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                 <td class="py-2 px-3">08:00-10:00</td>
+                                 <td class="py-2 px-3 text-right font-medium">20</td>
+                             </tr>
+                             <!-- Data jam lainnya -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
          </div>
-         <div class="overflow-x-auto">
-             <table class="w-full text-gray-700">
-                 <thead class="bg-gray-50 text-gray-600 text-sm">
-                     <tr>
-                         <th class="py-3 px-4 text-left font-semibold">Rentang Waktu</th>
-                         <th class="py-3 px-4 text-right font-semibold">Total Tiket</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     <tr class="bg-blue-50 font-bold">
-                         <td class="py-3 px-4">Total</td>
-                         <td class="py-3 px-4 text-right text-blue-600">{{ $totalTicketsByHourRange }}</td>
-                     </tr>
-                     @foreach($ticketsByHourRange as $report)
-                     <tr class="border-t border-gray-200 hover:bg-gray-50">
-                         <td class="py-3 px-4">{{ $report->hour_range }}</td>
-                         <td class="py-3 px-4 text-right font-medium">{{ $report->total }}</td>
-                     </tr>
-                     @endforeach
-                 </tbody>
-             </table>
+
+         <!-- Kolom 2: Laporan Kategori & Aplikasi -->
+         <div class="space-y-6">
+             <!-- Category Reports -->
+             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                 <div class="bg-gradient-to-r from-teal-500 to-teal-600 px-4 py-3">
+                     <h3 class="text-lg font-bold text-white flex items-center">
+                         <svg class="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                         </svg>
+                         Laporan per Kategori
+                     </h3>
+                 </div>
+                 <div class="overflow-x-auto">
+                     <table class="w-full text-sm text-gray-700">
+                         <thead class="bg-gray-50 text-gray-600">
+                             <tr>
+                                 <th class="py-2 px-3 text-left font-semibold">Kategori</th>
+                                 <th class="py-2 px-3 text-right font-semibold text-red-500">Open</th>
+                                 <th class="py-2 px-3 text-right font-semibold text-green-500">Close</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr class="bg-blue-50 font-bold">
+                                 <td class="py-2 px-3">Total</td>
+                                 <td class="py-2 px-3 text-right text-red-600">45</td>
+                                 <td class="py-2 px-3 text-right text-green-600">105</td>
+                             </tr>
+                             <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                 <td class="py-2 px-3 font-medium">Bug</td>
+                                 <td class="py-2 px-3 text-right text-red-500 font-medium">15</td>
+                                 <td class="py-2 px-3 text-right text-green-500 font-medium">35</td>
+                             </tr>
+                             <!-- Data kategori lainnya -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+
+             <!-- Application Reports -->
+             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                 <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 px-4 py-3">
+                     <h3 class="text-lg font-bold text-white flex items-center">
+                         <svg class="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                         </svg>
+                         Laporan per Aplikasi
+                     </h3>
+                 </div>
+                 <div class="overflow-x-auto">
+                     <table class="w-full text-sm text-gray-700">
+                         <thead class="bg-gray-50 text-gray-600">
+                             <tr>
+                                 <th class="py-2 px-3 text-left font-semibold">Aplikasi</th>
+                                 <th class="py-2 px-3 text-right font-semibold text-red-500">Open</th>
+                                 <th class="py-2 px-3 text-right font-semibold text-green-500">Close</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr class="bg-blue-50 font-bold">
+                                 <td class="py-2 px-3">Total</td>
+                                 <td class="py-2 px-3 text-right text-red-600">45</td>
+                                 <td class="py-2 px-3 text-right text-green-600">105</td>
+                             </tr>
+                             <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                 <td class="py-2 px-3 font-medium">App A</td>
+                                 <td class="py-2 px-3 text-right text-red-500 font-medium">10</td>
+                                 <td class="py-2 px-3 text-right text-green-500 font-medium">25</td>
+                             </tr>
+                             <!-- Data aplikasi lainnya -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Kolom 3: Laporan Bulanan & Helpdesk -->
+         <div class="space-y-6">
+             <!-- Monthly Reports -->
+             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                 <div class="bg-gradient-to-r from-purple-500 to-purple-600 px-4 py-3">
+                     <h3 class="text-lg font-bold text-white flex items-center">
+                         <svg class="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                         </svg>
+                         Tiket per Bulan
+                     </h3>
+                 </div>
+                 <div class="overflow-x-auto">
+                     <table class="w-full text-sm text-gray-700">
+                         <thead class="bg-gray-50 text-gray-600">
+                             <tr>
+                                 <th class="py-2 px-3 text-left font-semibold">Bulan</th>
+                                 <th class="py-2 px-3 text-right font-semibold">Total</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                 <td class="py-2 px-3 font-medium">Januari 2024</td>
+                                 <td class="py-2 px-3 text-right font-bold text-blue-600">120</td>
+                             </tr>
+                             <!-- Data bulan lainnya -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+
+             <!-- Helpdesk Reports -->
+             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                 <div class="bg-gradient-to-r from-indigo-500 to-indigo-600 px-4 py-3">
+                     <h3 class="text-lg font-bold text-white flex items-center">
+                         <svg class="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                         </svg>
+                         Laporan per Helpdesk
+                     </h3>
+                 </div>
+                 <div class="overflow-x-auto">
+                     <table class="w-full text-sm text-gray-700">
+                         <thead class="bg-gray-50 text-gray-600">
+                             <tr>
+                                 <th class="py-2 px-3 text-left font-semibold">Helpdesk</th>
+                                 <th class="py-2 px-3 text-right font-semibold">Total</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                 <td class="py-2 px-3 font-medium">Helpdesk A</td>
+                                 <td class="py-2 px-3 text-right font-bold text-blue-600">75</td>
+                             </tr>
+                             <!-- Data helpdesk lainnya -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+
+             <!-- Unresolved Bugs -->
+             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                 <div class="bg-gradient-to-r from-red-500 to-red-600 px-4 py-3">
+                     <h3 class="text-lg font-bold text-white flex items-center">
+                         <svg class="w-4 h-4 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                         </svg>
+                         Unresolved Bugs
+                     </h3>
+                 </div>
+                 <div class="overflow-x-auto">
+                     <table class="w-full text-sm text-gray-700">
+                         <thead class="bg-gray-50 text-gray-600">
+                             <tr>
+                                 <th class="py-2 px-3 text-left font-semibold">Bulan</th>
+                                 <th class="py-2 px-3 text-right font-semibold">Open</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             <tr class="border-t border-gray-200 hover:bg-gray-50">
+                                 <td class="py-2 px-3 font-medium">Januari 2024</td>
+                                 <td class="py-2 px-3 text-right font-bold text-red-600">15</td>
+                             </tr>
+                             <!-- Data unresolved bugs lainnya -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
          </div>
      </div>
  </div>
-
- <!-- Application and Category Reports -->
- <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-     <!-- Category Reports -->
-     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-         <div class="bg-gradient-to-r from-teal-500 to-teal-600 px-6 py-4">
-             <h3 class="text-xl font-bold text-white flex items-center">
-                 <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                 </svg>
-                 Laporan per Kategori
-             </h3>
-         </div>
-         <div class="overflow-x-auto">
-             <table class="w-full text-gray-700">
-                 <thead class="bg-gray-50 text-gray-600 text-sm">
-                     <tr>
-                         <th class="py-3 px-4 text-left font-semibold">Kategori</th>
-                         <th class="py-3 px-4 text-right font-semibold text-red-500">Open</th>
-                         <th class="py-3 px-4 text-right font-semibold text-green-500">Close</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     <tr class="bg-blue-50 font-bold">
-                         <td class="py-3 px-4">Total</td>
-                         <td class="py-3 px-4 text-right text-red-600">{{ $totalOpen }}</td>
-                         <td class="py-3 px-4 text-right text-green-600">{{ $totalClose }}</td>
-                     </tr>
-                     @foreach($kategoriReports as $report)
-                     <tr class="border-t border-gray-200 hover:bg-gray-50">
-                         <td class="py-3 px-4 font-medium">{{ $report->category ?: 'Tidak ada Kategori' }}</td>
-                         <td class="py-3 px-4 text-right text-red-500 font-medium">{{ $report->open_count }}</td>
-                         <td class="py-3 px-4 text-right text-green-500 font-medium">{{ $report->close_count }}</td>
-                     </tr>
-                     @endforeach
-                 </tbody>
-             </table>
-         </div>
-     </div>
-
-     <!-- Application Reports -->
-     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-         <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 px-6 py-4">
-             <h3 class="text-xl font-bold text-white flex items-center">
-                 <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
-                 </svg>
-                 Laporan per Aplikasi
-             </h3>
-         </div>
-         <div class="overflow-x-auto">
-             <table class="w-full text-gray-700">
-                 <thead class="bg-gray-50 text-gray-600 text-sm">
-                     <tr>
-                         <th class="py-3 px-4 text-left font-semibold">Aplikasi</th>
-                         <th class="py-3 px-4 text-right font-semibold text-red-500">Open</th>
-                         <th class="py-3 px-4 text-right font-semibold text-green-500">Close</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     <tr class="bg-blue-50 font-bold">
-                         <td class="py-3 px-4">Total</td>
-                         <td class="py-3 px-4 text-right text-red-600">{{ $totalOpenApp }}</td>
-                         <td class="py-3 px-4 text-right text-green-600">{{ $totalCloseApp }}</td>
-                     </tr>
-                     @foreach($aplikasiReports as $report)
-                     <tr class="border-t border-gray-200 hover:bg-gray-50">
-                         <td class="py-3 px-4 font-medium">{{ $report->application ?: 'Tidak ada Aplikasi' }}</td>
-                         <td class="py-3 px-4 text-right text-red-500 font-medium">{{ $report->open_count }}</td>
-                         <td class="py-3 px-4 text-right text-green-500 font-medium">{{ $report->close_count }}</td>
-                     </tr>
-                     @endforeach
-                 </tbody>
-             </table>
-         </div>
-     </div>
- </div>
-
- <!-- Application Bugs Reports -->
- <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-     <div class="bg-gradient-to-r from-purple-500 to-purple-600 px-6 py-4">
+ <!-- Unresolved Bugs by Month -->
+ <div class="bg-white rounded-xl shadow-md overflow-hidden">
+     <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
          <h3 class="text-xl font-bold text-white flex items-center">
              <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
-                 </path>
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
              </svg>
-             Laporan per Application Bugs
+             Unresolved Bugs by Month
          </h3>
      </div>
-
      <div class="overflow-x-auto">
-         <table class="min-w-full text-gray-700">
+         <table class="w-full text-gray-700">
              <thead class="bg-gray-50 text-gray-600 text-sm">
                  <tr>
-                     <th class="py-3 px-4 text-left font-semibold">Aplikasi</th>
-                     <th class="py-3 px-4 text-right font-semibold text-red-500">Open</th>
-                     <th class="py-3 px-4 text-right font-semibold text-green-500">Close</th>
+                     <th class="py-3 px-4 text-left font-semibold">Bulan</th>
+                     <th class="py-3 px-4 text-right font-semibold text-red-500">Total Open</th>
                  </tr>
              </thead>
-
-             <tbody class="text-sm">
-                 <tr class="bg-blue-50 font-bold">
-                     <td class="py-3 px-4">Total</td>
-                     <td class="py-3 px-4 text-right text-red-600">{{ $totals['open'] }}</td>
-                     <td class="py-3 px-4 text-right text-green-600">{{ $totals['close'] }}</td>
+             <tbody>
+                 @forelse ($unresolvedBugsByMonth as $month)
+                 <tr class="border-t border-gray-200 hover:bg-gray-50">
+                     <td class="py-3 px-4 font-medium">{{ $month['month'] }}</td>
+                     <td class="py-3 px-4 text-right font-bold text-red-600">{{ $month['total'] }}</td>
                  </tr>
-
-                 @foreach($applications as $report)
-                 <tr class="border-t border-gray-200 hover:bg-gray-50 transition">
-                     <td class="py-3 px-4 font-medium">{{ $report->application ?: 'Tidak ada Aplikasi' }}</td>
-                     <td class="py-3 px-4 text-right text-red-500 font-medium">{{ $report->open_count }}</td>
-                     <td class="py-3 px-4 text-right text-green-500 font-medium">{{ $report->close_count }}</td>
+                 @empty
+                 <tr>
+                     <td colspan="2" class="py-4 text-center text-gray-500">Tidak ada bug yang belum diselesaikan</td>
                  </tr>
-                 @endforeach
+                 @endforelse
              </tbody>
          </table>
      </div>
  </div>
-
- <!-- Monthly Reports and Unresolved Bugs -->
- <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-     <!-- Monthly Reports -->
-     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-         <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
-             <h3 class="text-xl font-bold text-white flex items-center">
-                 <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                 </svg>
-                 Tiket per Bulan
-             </h3>
-         </div>
-         <div class="overflow-x-auto">
-             <table class="w-full text-gray-700">
-                 <thead class="bg-gray-50 text-gray-600 text-sm">
-                     <tr>
-                         <th class="py-3 px-4 text-left font-semibold">Bulan</th>
-                         <th class="py-3 px-4 text-right font-semibold">Total Tiket</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     @forelse ($ticketsByMonth as $month)
-                     <tr class="border-t border-gray-200 hover:bg-gray-50">
-                         <td class="py-3 px-4 font-medium">{{ $month['month'] }}</td>
-                         <td class="py-3 px-4 text-right font-bold text-blue-600">{{ $month['total'] }}</td>
-                     </tr>
-                     @empty
-                     <tr>
-                         <td colspan="2" class="py-4 text-center text-gray-500">Tidak ada data tiket</td>
-                     </tr>
-                     @endforelse
-                 </tbody>
-             </table>
-         </div>
-     </div>
-
-     <!-- Unresolved Bugs by Month -->
-     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-         <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
-             <h3 class="text-xl font-bold text-white flex items-center">
-                 <svg class="w-5 h-5 text-white mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                 </svg>
-                 Unresolved Bugs by Month
-             </h3>
-         </div>
-         <div class="overflow-x-auto">
-             <table class="w-full text-gray-700">
-                 <thead class="bg-gray-50 text-gray-600 text-sm">
-                     <tr>
-                         <th class="py-3 px-4 text-left font-semibold">Bulan</th>
-                         <th class="py-3 px-4 text-right font-semibold text-red-500">Total Open</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     @forelse ($unresolvedBugsByMonth as $month)
-                     <tr class="border-t border-gray-200 hover:bg-gray-50">
-                         <td class="py-3 px-4 font-medium">{{ $month['month'] }}</td>
-                         <td class="py-3 px-4 text-right font-bold text-red-600">{{ $month['total'] }}</td>
-                     </tr>
-                     @empty
-                     <tr>
-                         <td colspan="2" class="py-4 text-center text-gray-500">Tidak ada bug yang belum diselesaikan</td>
-                     </tr>
-                     @endforelse
-                 </tbody>
-             </table>
-         </div>
-     </div>
  </div>
 
  <!-- Helpdesk Reports -->

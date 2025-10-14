@@ -115,16 +115,21 @@
         </div>
 
         <div>
-            <label for="user_id" class="block text-sm font-semibold text-gray-700 mb-2">Karyawan</label>
-            <select name="user_id" id="user_id" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 transition-colors">
-                <option value="">Pilih Karyawan</option>
-                @foreach($users as $user)
-                <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                    {{ $user->name }}
-                </option>
-                @endforeach
+            <label for="nama_helpdesk" class="block text-sm font-semibold text-gray-700 mb-2">Helpdesk</label>
+            <select name="nama_helpdesk" id="nama_helpdesk" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 transition-colors" onchange="this.form.submit()">
+                <option value="">Semua Helpdesk</option>
+                <option value="Anisya" {{ request('nama_helpdesk') == 'Anisya' ? 'selected' : '' }}>Anisya</option>
+                <option value="Nisha" {{ request('nama_helpdesk') == 'Nisha' ? 'selected' : '' }}>Nisha</option>
+                <option value="Benny" {{ request('nama_helpdesk') == 'Benny' ? 'selected' : '' }}>Benny</option>
+                <option value="Faisal" {{ request('nama_helpdesk') == 'Faisal' ? 'selected' : '' }}>Faisal</option>
+                <option value="Patar" {{ request('nama_helpdesk') == 'Patar' ? 'selected' : '' }}>Patar</option>
+                <option value="Ridwan" {{ request('nama_helpdesk') == 'Ridwan' ? 'selected' : '' }}>Ridwan</option>
+                <option value="Rizky" {{ request('nama_helpdesk') == 'Rizky' ? 'selected' : '' }}>Rizky</option>
+                <option value="Hafiz" {{ request('nama_helpdesk') == 'Hafiz' ? 'selected' : '' }}>Hafiz</option>
+                <option value="Rofina" {{ request('nama_helpdesk') == 'Rofina' ? 'selected' : '' }}>Rofina</option>
             </select>
         </div>
+
 
         <div class="md:col-span-2 lg:col-span-4 flex justify-end space-x-3 pt-2">
             <a href="{{ route('admin.tickets.index') }}" class="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium">

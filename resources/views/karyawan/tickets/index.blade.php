@@ -103,7 +103,7 @@
                         </span>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $ticket->complaint_type === 'normal' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $ticket->complaint_type === 'Normal' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                             {{ $ticket->complaint_type }}
                         </span>
                     </td>
@@ -332,17 +332,17 @@
                                 class: 'bg-red-100 text-red-800',
                                 text: 'Open'
                             },
-                            'close': {
+                            'Close': {
                                 class: 'bg-green-100 text-green-800',
                                 text: 'Close'
                             }
                         },
                         'complaint_type': {
-                            'normal': {
+                            'Normal': {
                                 class: 'bg-green-100 text-green-800',
                                 text: 'Normal'
                             },
-                            'hard': {
+                            'Hard': {
                                 class: 'bg-red-100 text-red-800',
                                 text: 'Hard'
                             }
@@ -352,33 +352,33 @@
                                 class: 'bg-purple-100 text-purple-800',
                                 text: 'Premium'
                             },
-                            'full service': {
+                            'Full Service': {
                                 class: 'bg-blue-100 text-blue-800',
                                 text: 'Full Service'
                             },
-                            'lainnya': {
+                            'Lainnya': {
                                 class: 'bg-gray-100 text-gray-800',
                                 text: 'Lainnya'
                             },
-                            'corporate': {
+                            'Corporate': {
                                 class: 'bg-indigo-100 text-indigo-800',
                                 text: 'Corporate'
                             }
                         },
                         'status_qris': {
-                            'sukses': {
+                            'Sukses': {
                                 class: 'bg-green-100 text-green-800',
                                 text: 'Sukses'
                             },
-                            'pending/expired': {
+                            'Pending/Expired': {
                                 class: 'bg-yellow-100 text-yellow-800',
                                 text: 'Pending/Expired'
                             },
-                            'gagal': {
+                            'Gagal': {
                                 class: 'bg-red-100 text-red-800',
                                 text: 'Gagal'
                             },
-                            'none': {
+                            'None': {
                                 class: 'bg-gray-100 text-gray-800',
                                 text: 'None'
                             }

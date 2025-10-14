@@ -51,7 +51,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-green-100 text-sm font-medium">Tiket Closed</p>
-                <p class="text-3xl font-bold mt-1">{{ $tickets->where('ticket_type', 'close')->count() }}</p>
+                <p class="text-3xl font-bold mt-1">{{ $tickets->where('ticket_type', 'Close')->count() }}</p>
             </div>
             <div class="p-3 bg-green-400 rounded-xl">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,9 +107,9 @@
             <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
             <select name="category" id="category" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 transition-colors">
                 <option value="">Pilih Kategori</option>
-                <option value="assistance" {{ request('category') == 'assistance' ? 'selected' : '' }}>Assistance</option>
-                <option value="General Question" {{ request('category') == 'General Question' ? 'selected' : '' }}>General Question</option>
-                <option value="application bugs" {{ request('category') == 'application bugs' ? 'selected' : '' }}>Application Bugs</option>
+                <option value="Assistances" {{ request('category') == 'Assistances' ? 'selected' : '' }}>Assistances</option>
+                <option value="General Questions" {{ request('category') == 'General Questions' ? 'selected' : '' }}>General Questions</option>
+                <option value="Application Bugs" {{ request('category') == 'Application Bugs' ? 'selected' : '' }}>Application Bugs</option>
                 <option value="Request Features" {{ old('category') == 'Request Features' ? 'selected' : '' }}>Request Features</option>
             </select>
         </div>
@@ -186,12 +186,12 @@
 
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $ticket->ticket_type === 'Open' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-green-100 text-green-800 border border-green-200' }}">
-                            {{ $ticket->ticket_type === 'Open' ? 'Open' : 'Closed' }}
+                            {{ $ticket->ticket_type === 'Open' ? 'Open' : 'Close' }}
                         </span>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $ticket->complaint_type === 'normal' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200' }}">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $ticket->complaint_type === 'Normal' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200' }}">
                             {{ $ticket->complaint_type }}
                         </span>
                     </td>
@@ -364,21 +364,21 @@
                 const getBadge = (type, value) => {
                     const configs = {
                         'ticket_type': {
-                            'open': {
+                            'Open': {
                                 class: 'bg-red-100 text-red-800',
                                 text: 'Open'
                             },
-                            'close': {
+                            'Close': {
                                 class: 'bg-green-100 text-green-800',
                                 text: 'Close'
                             }
                         },
                         'complaint_type': {
-                            'normal': {
+                            'Normal': {
                                 class: 'bg-green-100 text-green-800',
                                 text: 'Normal'
                             },
-                            'hard': {
+                            'Hard': {
                                 class: 'bg-red-100 text-red-800',
                                 text: 'Hard'
                             }
@@ -388,33 +388,33 @@
                                 class: 'bg-purple-100 text-purple-800',
                                 text: 'Premium'
                             },
-                            'full service': {
+                            'Full Service': {
                                 class: 'bg-blue-100 text-blue-800',
                                 text: 'Full Service'
                             },
-                            'corporate': {
+                            'Corporate': {
                                 class: 'bg-indigo-100 text-indigo-800',
                                 text: 'Corporate'
                             },
-                            'lainnya': {
+                            'Lainnya': {
                                 class: 'bg-gray-100 text-gray-800',
                                 text: 'Lainnya'
                             }
                         },
                         'status_qris': {
-                            'sukses': {
+                            'Sukses': {
                                 class: 'bg-green-100 text-green-800',
                                 text: 'Sukses'
                             },
-                            'pending/expired': {
+                            'Pending/Expired': {
                                 class: 'bg-yellow-100 text-yellow-800',
                                 text: 'Pending/Expired'
                             },
-                            'gagal': {
+                            'Gagal': {
                                 class: 'bg-red-100 text-red-800',
                                 text: 'Gagal'
                             },
-                            'none': {
+                            'None': {
                                 class: 'bg-gray-100 text-gray-800',
                                 text: 'None'
                             }

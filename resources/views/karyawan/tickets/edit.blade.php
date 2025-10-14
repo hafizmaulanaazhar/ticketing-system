@@ -18,8 +18,8 @@
             <div>
                 <label for="ticket_type" class="block text-sm font-medium text-gray-700 mb-2">Tipe Tiket *</label>
                 <select name="ticket_type" id="ticket_type" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="open" {{ old('ticket_type', $ticket->ticket_type) == 'open' ? 'selected' : '' }}>Open</option>
-                    <option value="close" {{ old('ticket_type', $ticket->ticket_type) == 'close' ? 'selected' : '' }}>Close</option>
+                    <option value="Open" {{ old('ticket_type', $ticket->ticket_type) == 'Open' ? 'selected' : '' }}>Open</option>
+                    <option value="Close" {{ old('ticket_type', $ticket->ticket_type) == 'Close' ? 'selected' : '' }}>Close</option>
                 </select>
                 @error('ticket_type')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -30,8 +30,8 @@
             <div>
                 <label for="complaint_type" class="block text-sm font-medium text-gray-700 mb-2">Tipe Komplain *</label>
                 <select name="complaint_type" id="complaint_type" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="normal" {{ old('complaint_type', $ticket->complaint_type) == 'normal' ? 'selected' : '' }}>Normal</option>
-                    <option value="hard" {{ old('complaint_type', $ticket->complaint_type) == 'hard' ? 'selected' : '' }}>Hard</option>
+                    <option value="Normal" {{ old('complaint_type', $ticket->complaint_type) == 'Normal' ? 'selected' : '' }}>Normal</option>
+                    <option value="Hard" {{ old('complaint_type', $ticket->complaint_type) == 'Hard' ? 'selected' : '' }}>Hard</option>
                 </select>
                 @error('complaint_type')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -59,9 +59,9 @@
             <div>
                 <label for="source" class="block text-sm font-medium text-gray-700 mb-2">Source *</label>
                 <select name="source" id="source" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="helpdesk" {{ old('source', $ticket->source) == 'helpdesk' ? 'selected' : '' }}>Helpdesk</option>
-                    <option value="Tim Support" {{ old('source', $ticket->source) == 'Tim Support' ? 'selected' : '' }}>Tim Support</option>
-                    <option value="Tim Dev" {{ old('source', $ticket->source) == 'Tim Dev' ? 'selected' : '' }}>Tim Dev</option>
+                    <option value="Help Desk" {{ old('source', $ticket->source) == 'Help Desk' ? 'selected' : '' }}>Help Desk</option>
+                    <option value="Team Support" {{ old('source', $ticket->source) == 'Team Support' ? 'selected' : '' }}>Team Support</option>
+                    <option value="Team Sales" {{ old('source', $ticket->source) == 'Team Sales' ? 'selected' : '' }}>Team Sales</option>
                 </select>
                 @error('source')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -73,9 +73,9 @@
                 <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">Priority *</label>
                 <select name="priority" id="priority" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="Premium" {{ old('priority', $ticket->priority) == 'Premium' ? 'selected' : '' }}>Premium</option>
-                    <option value="full service" {{ old('priority', $ticket->priority) == 'full service' ? 'selected' : '' }}>Full Service</option>
-                    <option value="lainnya" {{ old('priority', $ticket->priority) == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
-                    <option value="corporate" {{ old('priority', $ticket->priority) == 'corporate' ? 'selected' : '' }}>Corporate</option>
+                    <option value="Full Service" {{ old('priority', $ticket->priority) == 'Full Service' ? 'selected' : '' }}>Full Service</option>
+                    <option value="Lainnya" {{ old('priority', $ticket->priority) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                    <option value="Corporate" {{ old('priority', $ticket->priority) == 'Corporate' ? 'selected' : '' }}>Corporate</option>
                 </select>
                 @error('priority')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -111,10 +111,10 @@
             <div>
                 <label for="application" class="block text-sm font-medium text-gray-700 mb-2">Application/Hardware *</label>
                 <select name="application" id="application" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="aplikasi kasir" {{ old('application', $ticket->application) == 'aplikasi kasir' ? 'selected' : '' }}>Aplikasi Kasir</option>
-                    <option value="aplikasi web merchant" {{ old('application', $ticket->application) == 'aplikasi web merchant' ? 'selected' : '' }}>Aplikasi Web Merchant</option>
-                    <option value="hardware" {{ old('application', $ticket->application) == 'hardware' ? 'selected' : '' }}>Hardware</option>
-                    <option value="Aplikasi web internal" {{ old('application', $ticket->application) == 'Aplikasi web internal' ? 'selected' : '' }}>Aplikasi Web Internal</option>
+                    <option value="Aplikasi Kasir" {{ old('application', $ticket->application) == 'Aplikasi Kasir' ? 'selected' : '' }}>Aplikasi Kasir</option>
+                    <option value="Aplikasi Web Merchant" {{ old('application', $ticket->application) == 'Aplikasi Web Merchant' ? 'selected' : '' }}>Aplikasi Web Merchant</option>
+                    <option value="Hardware" {{ old('application', $ticket->application) == 'Hardware' ? 'selected' : '' }}>Hardware</option>
+                    <option value="Aplikasi Web Internal" {{ old('application', $ticket->application) == 'Aplikasi Web Internal' ? 'selected' : '' }}>Aplikasi Web Internal</option>
                     <option value="Aplikasi Attendance" {{ old('application', $ticket->application) == 'Aplikasi Attendance' ? 'selected' : '' }}>Aplikasi Attendance</option>
                     <option value="Aplikasi Mobile" {{ old('application', $ticket->application) == 'Aplikasi Mobile' ? 'selected' : '' }}>Aplikasi Mobile</option>
                 </select>
@@ -127,9 +127,9 @@
             <div>
                 <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
                 <select name="category" id="category" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="assistance" {{ old('category', $ticket->category) == 'assistance' ? 'selected' : '' }}>Assistance</option>
-                    <option value="General Question" {{ old('category', $ticket->category) == 'General Question' ? 'selected' : '' }}>General Question</option>
-                    <option value="application bugs" {{ old('category', $ticket->category) == 'application bugs' ? 'selected' : '' }}>Application Bugs</option>
+                    <option value="Assistances" {{ old('category', $ticket->category) == 'Assistances' ? 'selected' : '' }}>Assistance</option>
+                    <option value="General Questions" {{ old('category', $ticket->category) == 'General Questions' ? 'selected' : '' }}>General Question</option>
+                    <option value="Application Bugs" {{ old('category', $ticket->category) == 'Application Bugs' ? 'selected' : '' }}>Application Bugs</option>
                     <option value="Request Features" {{ old('category', $ticket->category) == 'Request Features' ? 'selected' : '' }}>Request Features</option>
                 </select>
                 @error('category')
@@ -157,10 +157,10 @@
             <div>
                 <label for="status_qris" class="block text-sm font-medium text-gray-700 mb-2">Status QRIS *</label>
                 <select name="status_qris" id="status_qris" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="sukses" {{ old('status_qris', $ticket->status_qris) == 'sukses' ? 'selected' : '' }}>Sukses</option>
-                    <option value="pending/expired" {{ old('status_qris', $ticket->status_qris) == 'pending/expired' ? 'selected' : '' }}>Pending/Expired</option>
-                    <option value="gagal" {{ old('status_qris', $ticket->status_qris) == 'gagal' ? 'selected' : '' }}>Gagal</option>
-                    <option value="none" {{ old('status_qris', $ticket->status_qris) == 'none' ? 'selected' : '' }}>None</option>
+                    <option value="Sukses" {{ old('status_qris', $ticket->status_qris) == 'Sukses' ? 'selected' : '' }}>Sukses</option>
+                    <option value="Pending/Expired" {{ old('status_qris', $ticket->status_qris) == 'Pending/Expired' ? 'selected' : '' }}>Pending/Expired</option>
+                    <option value="Gagal" {{ old('status_qris', $ticket->status_qris) == 'Gagal' ? 'selected' : '' }}>Gagal</option>
+                    <option value="None" {{ old('status_qris', $ticket->status_qris) == 'None' ? 'selected' : '' }}>None</option>
                 </select>
                 @error('status_qris')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -174,9 +174,9 @@
                     <option value="Helpdesk" {{ old('assigned', $ticket->assigned) == 'Helpdesk' ? 'selected' : '' }}>Helpdesk</option>
                     <option value="Development" {{ old('assigned', $ticket->assigned) == 'Development' ? 'selected' : '' }}>Development</option>
                     <option value="Marketing" {{ old('assigned', $ticket->assigned) == 'Marketing' ? 'selected' : '' }}>Marketing</option>
-                    <option value="Tim Support" {{ old('assigned', $ticket->assigned) == 'Tim Support' ? 'selected' : '' }}>Tim Support</option>
+                    <option value="Team Support" {{ old('assigned', $ticket->assigned) == 'Team Support' ? 'selected' : '' }}>Team Support</option>
                     <option value="Gudang" {{ old('assigned', $ticket->assigned) == 'Gudang' ? 'selected' : '' }}>Gudang</option>
-                    <option value="Tim PAC" {{ old('assigned', $ticket->assigned) == 'Tim PAC' ? 'selected' : '' }}>Tim PAC</option>
+                    <option value="Team PAC" {{ old('assigned', $ticket->assigned) == 'Team PAC' ? 'selected' : '' }}>Team PAC</option>
                 </select>
                 @error('assigned')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

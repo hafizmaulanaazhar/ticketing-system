@@ -11,35 +11,35 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->string('ticket_number')->unique();
-            $table->enum('ticket_type', ['Open', 'close']);
-            $table->enum('complaint_type', ['normal', 'hard']);
+            $table->enum('ticket_type', ['Open', 'Close']);
+            $table->enum('complaint_type', ['Normal', 'Hard']);
             $table->time('jam');
             $table->date('tanggal');
-            $table->enum('source', ['helpdesk', 'Tim Support', 'Tim Dev']);
+            $table->enum('source', ['Help Desk', 'Team Sales', 'Team Support']);
             $table->string('company');
             $table->string('branch');
             $table->string('kota_cabang');
-            $table->enum('priority', ['Premium', 'full service', 'lainnya', 'corporate']);
+            $table->enum('priority', ['Premium', 'Full Service', 'Lainnya', 'Corporate']);
             $table->enum('application', [
-                'aplikasi kasir',
-                'aplikasi web merchant',
-                'hardware',
+                'Aplikasi Kasir',
+                'Aplikasi Web Merchant',
+                'Hardware',
                 'Aplikasi Mobile',
-                'Aplikasi web internal',
+                'Aplikasi Web Internal',
                 'Aplikasi Attendance'
             ]);
             $table->enum('category', [
-                'assistance',
-                'General Question',
-                'application bugs',
+                'Assistances',
+                'General Questions',
+                'Application Bugs',
                 'Request Features'
             ]);
             $table->string('sub_category');
             $table->enum('status_qris', [
-                'sukses',
-                'pending/expired',
-                'gagal',
-                'none'
+                'Sukses',
+                'Pending/Expired',
+                'Gagal',
+                'None'
             ])->default('none');
             $table->text('info_kendala');
             $table->text('pengecekan')->nullable();
@@ -49,9 +49,9 @@ return new class extends Migration
                 'Helpdesk',
                 'Development',
                 'Marketing',
-                'Tim Support',
+                'Team Support',
                 'Gudang',
-                'Tim PAC'
+                'Team PAC'
             ]);
             $table->string('pic_merchant');
             $table->string('jabatan');

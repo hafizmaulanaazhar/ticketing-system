@@ -5,153 +5,87 @@ namespace App\Imports;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Support\Collection;
 
-class TicketsImport implements ToModel, WithHeadingRow
+class TicketsImport implements ToCollection, WithHeadingRow, WithChunkReading
 {
-    public function model(array $row)
+    public function collection(Collection $rows)
     {
-        try {
+        $batchSize = 500; // jumlah baris per insert
+        $insertData = [];
+
+        foreach ($rows as $row) {
 
             // ======================
-            // 1. VALIDASI WAJIB ADA
+            // 1. Ambil ticket number
             // ======================
-
-            $requiredFields = [
-                'tickets',
-                'complaint',
-                'jam',
-                'date_open',
-                'source',
-                'company',
-                'branch',
-                'kota_cabang',
-                'priority',
-                'applicationshardware',
-                'categories',
-                'subcategory',
-                'status_qris',
-                'info_kendala',
-                'assigned',
-                'jabatan',
-                'help_desk',
-            ];
-
-            // foreach ($requiredFields as $field) {
-            //     if (!isset($row[$field]) || $row[$field] === null || $row[$field] === '') {
-            //         Log::error("Missing required field: $field", $row);
-            //         return null;
-            //     }
-            // }
+            $ticketNumber = preg_replace('/[^0-9]/', '', $row['no'] ?? '');
+            if (!$ticketNumber) continue;
 
             // ======================
-            // 2. NORMALISASI DATA
+            // 2. Cek duplikat
             // ======================
-
-            // Tanggal Excel → Carbon
-            $tanggal = null;
-
-            if (isset($row['date_open']) && $row['date_open'] != '') {
-                try {
-                    // Coba konversi dari Excel numeric date
-                    $tanggal = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['date_open'])
-                        ->format('Y-m-d');
-                } catch (\Exception $e) {
-                    // fallback untuk teks format dd/mm/yyyy
-                    try {
-                        $tanggal = Carbon::createFromFormat('d/m/Y', $row['date_open'])->format('Y-m-d');
-                    } catch (\Exception $e2) {
-                        $tanggal = null; // tetap null kalau gagal parse
-                    }
-                }
-            }
-
-
-            // Jam Excel (decimal) → "HH:MM:SS"
-            $jam = isset($row['jam']) && $row['jam'] != ''
-                ? Carbon::createFromTimestampUTC($row['jam'] * 86400)->format('H:i:s')
-                : null;
-
-            $ticketNumber = isset($row['no']) && $row['no'] != ''
-                ? preg_replace('/[^0-9]/', '', $row['no'])
-                : null;
-
-            if (!$ticketNumber) {
-                Log::warning("Missing ticket number, row skipped");
-                return null; // skip row supaya tidak bikin nomor random
-            }
+            if (Ticket::where('ticket_number', $ticketNumber)->exists()) continue;
 
             // ======================
-            // 3. MAPPING ENUM
+            // 3. Mapping dan normalisasi
             // ======================
 
-            // A. Fix Mapping Application
-            $appRaw = strtolower(trim($row['applicationshardware']));
-
+            // Aplikasi
+            $appRaw = strtolower(trim($row['applicationshardware'] ?? ''));
             $applicationMap = [
-                'mobile dashboard'   => 'Aplikasi Mobile',
-                'dashboard mobile'   => 'Aplikasi Mobile',
+                'mobile dashboard' => 'Aplikasi Mobile',
+                'dashboard mobile' => 'Aplikasi Mobile',
                 'aplikasi mobile dashboard' => 'Aplikasi Mobile',
-                'mobile'             => 'Aplikasi Mobile',
-                'aplikasi mobile'    => 'Aplikasi Mobile',
-                'hardware'           => 'Hardware',
-                'aplikasi kasir'     => 'Aplikasi Kasir',
-                'kasir'              => 'Aplikasi Kasir',
+                'mobile' => 'Aplikasi Mobile',
+                'aplikasi mobile' => 'Aplikasi Mobile',
+                'hardware' => 'Hardware',
+                'aplikasi kasir' => 'Aplikasi Kasir',
+                'kasir' => 'Aplikasi Kasir',
                 'aplikasi web merchant' => 'Aplikasi Web Merchant',
                 'aplikasi attendance' => 'Aplikasi Attendance',
-                'aplikasi web internal' => 'Aplikasi Web Internal'
+                'aplikasi web internal' => 'Aplikasi Web Internal',
             ];
-
             $application = $applicationMap[$appRaw] ?? 'Aplikasi Mobile';
 
-
-            // B. Fix Mapping ticket_type
-            $ticketRaw = strtolower(trim($row['tickets']));
+            // Ticket type
+            $ticketRaw = strtolower(trim($row['tickets'] ?? ''));
             $ticketType = in_array($ticketRaw, ['open', 'close']) ? ucfirst($ticketRaw) : 'Close';
 
-
-            // C. Fix Mapping complaint_type
-            $complaintRaw = strtolower(trim($row['complaint']));
-
+            // Complaint type
+            $complaintRaw = strtolower(trim($row['complaint'] ?? ''));
             $complaintTypeMap = [
-                'NORMAL' => 'Normal',
-                'HARD' => 'Hard',
+                'normal' => 'Normal',
+                'hard' => 'Hard',
                 'hardcase' => 'Hard',
                 'hard case' => 'Hard',
-
-                // Input excel sering salah
                 'close' => 'Normal',
                 'closed' => 'Normal',
                 'open' => 'Normal',
                 'ticket close' => 'Normal',
             ];
-
             $complaintType = $complaintTypeMap[$complaintRaw] ?? 'Normal';
 
-
-            // D. Fix Mapping status_qris
-            $statusRaw = strtolower(trim($row['status_qris']));
+            // Status QRIS
+            $statusRaw = strtolower(trim($row['status_qris'] ?? ''));
             $statusQrisMap = [
                 'sukses' => 'Sukses',
                 'success' => 'Sukses',
-
                 'pending' => 'Pending/Expired',
                 'expired' => 'Pending/Expired',
                 'pending/expired' => 'Pending/Expired',
-
                 'gagal' => 'Gagal',
                 'failed' => 'Gagal',
-
                 'none' => 'None',
                 '-' => 'None',
             ];
             $statusQris = $statusQrisMap[$statusRaw] ?? 'None';
 
-
-            // E. Fix Mapping priority
-            $priorityRaw = strtolower(trim($row['priority']));
+            // Priority
+            $priorityRaw = strtolower(trim($row['priority'] ?? ''));
             $priorityMap = [
                 'premium' => 'Premium',
                 'full service' => 'Full Service',
@@ -160,10 +94,8 @@ class TicketsImport implements ToModel, WithHeadingRow
             ];
             $priority = $priorityMap[$priorityRaw] ?? 'Lainnya';
 
-
-            // F. Fix Mapping assigned
-            $assignedRaw = strtolower(trim($row['assigned']));
-
+            // Assigned
+            $assignedRaw = strtolower(trim($row['assigned'] ?? ''));
             $assignedMap = [
                 'helpdesk' => 'Helpdesk',
                 'development' => 'Development',
@@ -173,31 +105,34 @@ class TicketsImport implements ToModel, WithHeadingRow
                 'gudang' => 'Gudang',
                 'team pac' => 'Team PAC',
             ];
-
             $assigned = $assignedMap[$assignedRaw] ?? 'Helpdesk';
 
-
-            // Categori + Sub Category langsung ambil
-            $category       = $row['categories'] ?? 'Assistances';
-            $subCategory    = $row['subcategory'] ?? '-';
-
-            // ======================
-            // 3.5. CEK DUPLIKAT TICKET_NUMBER
-            // ======================
-
-            $existing = \App\Models\Ticket::where('ticket_number', $ticketNumber)->first();
-
-            if ($existing) {
-                Log::warning("Duplicate ticket_number skipped: {$ticketNumber}");
-                return null; // jangan insert agar tidak error
+            // Tanggal dan Jam
+            $tanggal = null;
+            if (!empty($row['date_open'])) {
+                try {
+                    $tanggal = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['date_open'])
+                        ->format('Y-m-d');
+                } catch (\Exception $e) {
+                    try {
+                        $tanggal = Carbon::createFromFormat('d/m/Y', $row['date_open'])->format('Y-m-d');
+                    } catch (\Exception $e2) {
+                        $tanggal = null;
+                    }
+                }
             }
+            $jam = !empty($row['jam'])
+                ? Carbon::createFromTimestampUTC($row['jam'] * 86400)->format('H:i:s')
+                : null;
 
+            // Category & Subcategory
+            $category = $row['categories'] ?? 'Assistances';
+            $subCategory = $row['subcategory'] ?? '-';
 
             // ======================
-            // 4. INSERT DATA
+            // 4. Tambahkan ke batch
             // ======================
-
-            return new Ticket([
+            $insertData[] = [
                 'user_id'        => auth()->id(),
                 'ticket_number'  => $ticketNumber,
                 'ticket_type'    => $ticketType,
@@ -207,7 +142,7 @@ class TicketsImport implements ToModel, WithHeadingRow
                 'source'         => $row['source'] ?? 'Help Desk',
                 'company'        => $row['company'] ?? '-',
                 'branch'         => $row['branch'] ?? '-',
-                'kota_cabang'    => $row['kota_cabang'] ?? 'Tidak Ada Cabang',
+                'kota_cabang'    => $row['kota_cabang'] ?? '-',
                 'priority'       => $priority,
                 'application'    => $application,
                 'category'       => $category,
@@ -222,11 +157,24 @@ class TicketsImport implements ToModel, WithHeadingRow
                 'jabatan'        => $row['jabatan'] ?? '-',
                 'nama_helpdesk'  => $row['help_desk'] ?? '-',
                 'status'         => 'close',
-            ]);
-        } catch (\Exception $e) {
+                'created_at'     => now(),
+                'updated_at'     => now(),
+            ];
 
-            Log::error("Error Importing Row: " . $e->getMessage(), $row);
-            return null;
+            if (count($insertData) >= $batchSize) {
+                Ticket::insert($insertData);
+                $insertData = [];
+            }
         }
+
+        // Insert sisa data
+        if (!empty($insertData)) {
+            Ticket::insert($insertData);
+        }
+    }
+
+    public function chunkSize(): int
+    {
+        return 500; // baca 500 baris per chunk
     }
 }

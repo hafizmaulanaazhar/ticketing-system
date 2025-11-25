@@ -149,3 +149,39 @@
     </div>
 </div>
 @endsection
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fileInput = form.querySelector('input[name="file"]');
+        if (!fileInput.files.length) return alert('Pilih file Excel dulu');
+
+        const file = fileInput.files[0];
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, {
+            type: 'array'
+        });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+        const chunkSize = 500;
+        for (let i = 0; i < jsonData.length; i += chunkSize) {
+            const chunk = jsonData.slice(i, i + chunkSize);
+
+            await fetch("{{ route('admin.import.excel') }}", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    rows: chunk
+                })
+            });
+        }
+
+        alert('Upload selesai!');
+    });
+</script>

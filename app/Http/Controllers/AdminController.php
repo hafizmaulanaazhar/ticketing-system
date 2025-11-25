@@ -335,22 +335,16 @@ class AdminController extends Controller
 
         return Excel::download(new TicketsExport($startDate, $endDate), $filename);
     }
-
     public function importExcel(Request $request)
     {
         $request->validate([
             'file' => 'required|mimes:xlsx,xls'
         ]);
 
-        // Cara queue (lebih aman di Vercel)
-        Excel::queueImport(new TicketsImport, $request->file('file'));
+        Excel::import(new TicketsImport, $request->file('file'));
 
-        // Jika mau langsung (riskan timeout di Vercel, file besar)
-        // Excel::import(new TicketsImport, $request->file('file'));
-
-        return back()->with('success', 'Data tiket sedang diproses!');
+        return back()->with('success', 'Data tiket berhasil diimport!');
     }
-
 
     public function downloadReport()
     {

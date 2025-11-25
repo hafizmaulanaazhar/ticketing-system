@@ -249,9 +249,9 @@
                 <label for="nama_helpdesk" class="block text-sm font-medium text-gray-700 mb-2">Nama Helpdesk *</label>
                 <select name="nama_helpdesk" id="nama_helpdesk" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">-- Pilih Nama Helpdesk --</option>
-                    <option value="Anisya" {{ old('nama_helpdesk') == 'Anisya' ? 'selected' : '' }}>Anisya</option>
+                    <option value="Anissya" {{ old('nama_helpdesk') == 'Anissya' ? 'selected' : '' }}>Anissya</option>
                     <option value="Nisha" {{ old('nama_helpdesk') == 'Nisha' ? 'selected' : '' }}>Nisha</option>
-                    <option value="Benny" {{ old('nama_helpdesk') == 'Benny' ? 'selected' : '' }}>Benny</option>
+                    <option value="Beni" {{ old('nama_helpdesk') == 'Beni' ? 'selected' : '' }}>Beni</option>
                     <option value="Faisal" {{ old('nama_helpdesk') == 'Faisal' ? 'selected' : '' }}>Faisal</option>
                     <option value="Patar" {{ old('nama_helpdesk') == 'Patar' ? 'selected' : '' }}>Patar</option>
                     <option value="Ridwan" {{ old('nama_helpdesk') == 'Ridwan' ? 'selected' : '' }}>Ridwan</option>

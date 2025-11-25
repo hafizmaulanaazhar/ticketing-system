@@ -97,6 +97,39 @@
         </form>
     </div>
 </div>
+<!-- Card Upload Excel -->
+<div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 mt-6">
+    <div class="flex items-center justify-between mb-4">
+        <div class="p-3 bg-orange-100 rounded-xl">
+            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm8 12v-4m0 0l-2 2m2-2l2 2m5-8H5">
+                </path>
+            </svg>
+        </div>
+    </div>
+
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">Upload Data Tiket (Excel)</h3>
+    <p class="text-gray-600 text-sm mb-4">
+        Upload file Excel untuk menambahkan atau memperbarui data tiket.
+    </p>
+
+    <form action="{{ route('admin.import.excel') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        @csrf
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Pilih File Excel</label>
+            <input type="file" name="file" accept=".xlsx,.xls" class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+        </div>
+
+        <button type="submit" class="w-full bg-orange-600 text-white py-3 px-4 rounded-xl hover:bg-orange-700 transition-colors font-semibold flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm8 12v-4m0 0l-2 2m2-2l2 2m5-8H5">
+                </path>
+            </svg>
+            Upload Excel
+        </button>
+    </form>
+</div>
+
 
 <!-- Informasi -->
 <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6">

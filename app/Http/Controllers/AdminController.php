@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Exports\TicketsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\TicketsImport;
 use Carbon\Carbon;
 
 
@@ -64,7 +65,7 @@ class AdminController extends Controller
 
         // Laporan tiket berdasarkan hari (Senin–Minggu)
         $ticketsByDay = Ticket::select(
-            DB::raw("DAYNAME(created_at) as day_name"),
+            DB::raw("DAYNAME(tanggal) as day_name"),
             DB::raw("COUNT(*) as total")
         )
             ->groupBy('day_name')
@@ -247,35 +248,55 @@ class AdminController extends Controller
     {
         $query = Ticket::with('user')->latest();
 
-        // Filters
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('ticket_number', 'like', "%{$search}%")
+                    ->orWhere('company', 'like', "%{$search}%")
+                    ->orWhere('branch', 'like', "%{$search}%")
+                    ->orWhere('kota_cabang', 'like', "%{$search}%")
+                    ->orWhere('info_kendala', 'like', "%{$search}%")
+                    ->orWhere('nama_helpdesk', 'like', "%{$search}%")
+                    ->orWhere('pic_merchant', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('type')) {
+            $query->where('ticket_type', ucfirst($request->type));
+        }
 
         if ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
         }
-
-        if ($request->has('day') && $request->day) {
-            $query->whereDate('created_at', $request->day);
+        if ($request->filled('day')) {
+            $query->whereDate('tanggal', $request->day);
         }
-
-        if ($request->has('month') && $request->month) {
-            $query->whereMonth('created_at', $request->month);
+        if ($request->filled('month')) {
+            $query->whereMonth('tanggal', $request->month);
         }
-
-        if ($request->has('category') && $request->category) {
+        if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
-
-        if ($request->has('application') && $request->application) {
+        if ($request->filled('application')) {
             $query->where('application', $request->application);
         }
 
-        $tickets = $query->paginate(10);
+        $totalTickets = $query->count();
+        $totalOpen = (clone $query)->where('ticket_type', 'Open')->count();
+        $totalClose = (clone $query)->where('ticket_type', 'Close')->count();
 
-        $users = User::where('role', 'karyawan')
-            ->orderBy('name', 'asc')
-            ->get();
-        return view('admin.tickets.index', compact('tickets', 'users'));
+        // Pagination dengan semua parameter
+        $tickets = $query->orderBy('tanggal', 'desc')
+            ->orderBy('jam', 'desc')
+            ->paginate(10)
+            ->appends($request->all());
+
+        $users = User::where('role', 'karyawan')->orderBy('name', 'asc')->get();
+
+        return view('admin.tickets.index', compact('tickets', 'users', 'totalTickets', 'totalOpen', 'totalClose'));
     }
+
 
     public function exportExcel(Request $request)
     {
@@ -313,6 +334,16 @@ class AdminController extends Controller
         }
 
         return Excel::download(new TicketsExport($startDate, $endDate), $filename);
+    }
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new TicketsImport, $request->file('file'));
+
+        return back()->with('success', 'Data tiket berhasil diimport!');
     }
 
     public function downloadReport()

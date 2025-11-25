@@ -64,9 +64,9 @@ class TicketController extends Controller
         ];
 
         $namaHelpdesk = [
-            'Anisya',
+            'Anissya',
             'Nisha',
-            'Benny',
+            'Beni',
             'Faisal',
             'Patar',
             'Ridwan',
@@ -104,7 +104,7 @@ class TicketController extends Controller
             'assigned' => 'required|in:Helpdesk,Development,Marketing,Team Support,Gudang,Team PAC',
             'pic_merchant' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
-            'nama_helpdesk' => 'required|in:Anisya,Nisha,Benny,Faisal,Patar,Ridwan,Rizky,Hafiz,Rofina',
+            'nama_helpdesk' => 'required|in:Anissya,Nisha,Beni,Faisal,Patar,Ridwan,Rizky,Hafiz,Rofina',
         ]);
 
         $validated['ticket_number'] = Ticket::generateTicketNumber();
@@ -171,9 +171,9 @@ class TicketController extends Controller
         ];
 
         $namaHelpdesk = [
-            'Anisya',
+            'Anissya',
             'Nisha',
-            'Benny',
+            'Beni',
             'Faisal',
             'Patar',
             'Ridwan',
@@ -215,7 +215,7 @@ class TicketController extends Controller
             'assigned' => 'required|in:Helpdesk,Development,Marketing,Team Support,Gudang,Team PAC',
             'pic_merchant' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
-            'nama_helpdesk' => 'required|in:Anisya,Nisha,Benny,Faisal,Patar,Ridwan,Rizky,Hafiz,Rofina',
+            'nama_helpdesk' => 'required|in:Anissya,Nisha,Beni,Faisal,Patar,Ridwan,Rizky,Hafiz,Rofina',
         ]);
 
         $ticket->update($validated);

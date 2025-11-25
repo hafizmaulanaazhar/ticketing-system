@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/tickets', [AdminController::class, 'ticketsIndex'])->name('tickets.index');
         Route::get('/download', [AdminController::class, 'downloadReport'])->name('download');
         Route::get('/export/excel', [AdminController::class, 'exportExcel'])->name('export.excel');
+        Route::post('/import-excel', [AdminController::class, 'importExcel'])->name('import.excel');
         Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
         Route::get('/reports/companies', [AdminController::class, 'companyReports'])->name('reports.companies');
     });

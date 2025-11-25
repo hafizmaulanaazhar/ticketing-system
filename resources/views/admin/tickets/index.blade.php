@@ -23,7 +23,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-blue-100 text-sm font-medium">Total Tiket</p>
-                <p class="text-3xl font-bold mt-1">{{ $tickets->count() }}</p>
+                <p class="text-3xl font-bold mt-1">{{ $totalTickets }}</p>
             </div>
             <div class="p-3 bg-blue-400 rounded-xl">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,7 +37,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-red-100 text-sm font-medium">Tiket Open</p>
-                <p class="text-3xl font-bold mt-1">{{ $tickets->where('ticket_type', 'Open')->count() }}</p>
+                <p class="text-3xl font-bold mt-1">{{ $totalOpen }}</p>
             </div>
             <div class="p-3 bg-red-400 rounded-xl">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-green-100 text-sm font-medium">Tiket Closed</p>
-                <p class="text-3xl font-bold mt-1">{{ $tickets->where('ticket_type', 'Close')->count() }}</p>
+                <p class="text-3xl font-bold mt-1">{{ $totalClose }}</p>
             </div>
             <div class="p-3 bg-green-400 rounded-xl">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,9 +64,10 @@
 
 <!-- Filter dan Pencarian Section -->
 <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+    <!-- Search dan Type Filter -->
+    <form method="GET" action="{{ route('admin.tickets.index') }}" class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         <div class="w-full lg:w-auto relative flex-1">
-            <input type="text" id="searchInput" placeholder="Cari tiket, perusahaan, karyawan, atau kendala..." class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari tiket, perusahaan, karyawan, atau kendala..." class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors">
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
@@ -74,19 +75,30 @@
             </div>
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
-            <select id="typeFilter" class="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors">
+            <select name="type" class="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 transition-colors">
                 <option value="">Semua Tipe</option>
-                <option value="open">Open</option>
-                <option value="close">Close</option>
+                <option value="open" {{ request('type') == 'open' ? 'selected' : '' }}>Open</option>
+                <option value="close" {{ request('type') == 'close' ? 'selected' : '' }}>Close</option>
             </select>
-            <button id="resetFilters" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium">
-                Reset
+            <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium">
+                Terapkan
             </button>
+            <a href="{{ route('admin.tickets.index') }}" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium text-center">
+                Reset
+            </a>
         </div>
-    </div>
+    </form>
 
-    <!-- Filter Form -->
+    <!-- Filter Form Lainnya -->
     <form method="GET" action="{{ route('admin.tickets.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 border-t pt-6">
+        <!-- Simpan search dan type filter di hidden fields -->
+        @if(request('search'))
+        <input type="hidden" name="search" value="{{ request('search') }}">
+        @endif
+        @if(request('type'))
+        <input type="hidden" name="type" value="{{ request('type') }}">
+        @endif
+
         <div>
             <label for="day" class="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label>
             <input type="date" name="day" id="day" value="{{ request('day') }}" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 transition-colors">
@@ -110,7 +122,7 @@
                 <option value="Assistances" {{ request('category') == 'Assistances' ? 'selected' : '' }}>Assistances</option>
                 <option value="General Questions" {{ request('category') == 'General Questions' ? 'selected' : '' }}>General Questions</option>
                 <option value="Application Bugs" {{ request('category') == 'Application Bugs' ? 'selected' : '' }}>Application Bugs</option>
-                <option value="Request Features" {{ old('category') == 'Request Features' ? 'selected' : '' }}>Request Features</option>
+                <option value="Request Features" {{ request('category') == 'Request Features' ? 'selected' : '' }}>Request Features</option>
             </select>
         </div>
 
@@ -137,14 +149,6 @@
     </form>
 </div>
 
-<!-- Loading Indicator -->
-<div id="loadingIndicator" class="hidden bg-white rounded-2xl shadow-lg p-8 mb-6 text-center">
-    <div class="inline-flex items-center">
-        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-        <span class="ml-3 text-gray-600 font-medium">Memuat data...</span>
-    </div>
-</div>
-
 <!-- Tabel Tiket -->
 <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
     <div class="overflow-x-auto">
@@ -161,7 +165,7 @@
                     <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
-            <tbody id="ticketsTableBody" class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($tickets as $ticket)
                 <tr class="hover:bg-gray-50 transition-colors group" data-ticket-id="{{ $ticket->id }}" data-ticket-number="{{ $ticket->ticket_number }}" data-user-name="{{ $ticket->user->name }}" data-company="{{ $ticket->company }}" data-branch="{{ $ticket->branch }}" data-kota-cabang="{{ $ticket->kota_cabang }}" data-sub-category="{{ $ticket->sub_category }}" data-priority="{{ $ticket->priority }}" data-application="{{ $ticket->application }}" data-category="{{ $ticket->category }}" data-source="{{ $ticket->source }}" data-ticket-type="{{ $ticket->ticket_type }}" data-complaint-type="{{ $ticket->complaint_type }}" data-tanggal="{{ $ticket->tanggal->format('Y-m-d') }}" data-jam="{{ \Carbon\Carbon::parse($ticket->jam)->format('H:i') }}" data-info-kendala="{{ $ticket->info_kendala }}" data-pengecekan="{{ $ticket->pengecekan ?? '-' }}" data-root-cause="{{ $ticket->root_cause ?? '-' }}" data-solving="{{ $ticket->solving ?? '-' }}" data-status-qris="{{ $ticket->status_qris }}" data-assigned="{{ $ticket->assigned }}" data-pic-merchant="{{ $ticket->pic_merchant }}" data-jabatan="{{ $ticket->jabatan }}" data-nama-helpdesk="{{ $ticket->nama_helpdesk }}">
 
@@ -227,7 +231,7 @@
 
 @if($tickets->hasPages())
 <div class="mt-8">
-    {{ $tickets->links() }}
+    {{ $tickets->withQueryString()->links() }}
 </div>
 @endif
 
@@ -272,89 +276,10 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        const typeFilter = document.getElementById('typeFilter');
-        const resetFilters = document.getElementById('resetFilters');
-        const ticketsTableBody = document.getElementById('ticketsTableBody');
-        const rows = ticketsTableBody.getElementsByTagName('tr');
-        const loadingIndicator = document.getElementById('loadingIndicator');
         const ticketDetailModal = document.getElementById('ticketDetailModal');
         const ticketDetailContent = document.getElementById('ticketDetailContent');
         const closeModal = document.getElementById('closeModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
-
-        function filterTickets() {
-            loadingIndicator.classList.remove('hidden');
-
-            setTimeout(() => {
-                const searchValue = searchInput.value.toLowerCase();
-                const typeValue = typeFilter.value;
-                let visibleRows = 0;
-
-                for (let row of rows) {
-                    if (row.id === 'noResultsMessage') continue;
-
-                    const ticketNumber = row.dataset.ticketNumber.toLowerCase();
-                    const detailInfo = row.dataset.infoKendala.toLowerCase();
-                    const company = row.dataset.company.toLowerCase();
-                    const branch = row.dataset.branch.toLowerCase();
-                    const helpdesk = row.dataset.namaHelpdesk.toLowerCase();
-                    const ticketType = row.dataset.ticketType.toLocaleLowerCase();
-
-                    const matchesSearch = ticketNumber.includes(searchValue) ||
-                        detailInfo.includes(searchValue) ||
-                        company.includes(searchValue) ||
-                        branch.includes(searchValue) ||
-                        helpdesk.includes(searchValue)
-                    const matchesType = !typeValue || ticketType === typeValue;
-
-                    if (matchesSearch && matchesType) {
-                        row.style.display = '';
-                        visibleRows++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
-
-                const noResultsMessage = document.getElementById('noResultsMessage');
-                if (visibleRows === 0 && (searchValue || typeValue)) {
-                    if (!noResultsMessage) {
-                        const noRow = document.createElement('tr');
-                        noRow.id = 'noResultsMessage';
-                        noRow.innerHTML = `
-                            <td colspan="8" class="px-4 py-8 text-center text-gray-500">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <p class="mt-2">Tidak ada tiket yang sesuai dengan filter</p>
-                                <button id="clearFiltersBtn" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                    Reset Filter
-                                </button>
-                            </td>`;
-                        ticketsTableBody.appendChild(noRow);
-
-                        document.getElementById('clearFiltersBtn').addEventListener('click', function() {
-                            searchInput.value = '';
-                            typeFilter.value = '';
-                            filterTickets();
-                        });
-                    }
-                } else if (noResultsMessage) {
-                    noResultsMessage.remove();
-                }
-
-                loadingIndicator.classList.add('hidden');
-            }, 300);
-        }
-
-        searchInput.addEventListener('input', filterTickets);
-        typeFilter.addEventListener('change', filterTickets);
-
-        resetFilters.addEventListener('click', function() {
-            searchInput.value = '';
-            typeFilter.value = '';
-            filterTickets();
-        });
 
         // Modal Detail
         document.querySelectorAll('.detail-btn').forEach(button => {

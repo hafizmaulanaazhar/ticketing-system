@@ -37,5 +37,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/import-excel', [AdminController::class, 'importExcel'])->name('import.excel');
         Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
         Route::get('/reports/companies', [AdminController::class, 'companyReports'])->name('reports.companies');
+        Route::get('/admin/reports', [AdminController::class, 'showReports'])->name('admin.reports');
+        Route::get('/dashboard/pdf', [AdminController::class, 'downloadPDF'])->name('dashboard.pdf');
     });
 });

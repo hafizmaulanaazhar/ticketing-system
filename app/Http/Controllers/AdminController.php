@@ -338,12 +338,54 @@ class AdminController extends Controller
     public function importExcel(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls'
+            'file' => 'required|file|mimes:xlsx,xls|max:10240' // 10MB max
         ]);
 
-        Excel::import(new TicketsImport, $request->file('file'));
+        try {
+            $file = $request->file('file');
 
-        return back()->with('success', 'Data tiket berhasil diimport!');
+            // Get total rows for progress tracking
+            $totalRows = $this->countExcelRows($file);
+
+            Log::info("Starting import for {$totalRows} rows");
+
+            $import = new TicketsImport();
+
+            // Import dengan chunking
+            Excel::import($import, $file);
+
+            $processed = $import->getProcessedRows();
+            $skipped = $import->getSkippedRows();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Import berhasil!",
+                'data' => [
+                    'total_rows' => $totalRows,
+                    'processed' => $processed,
+                    'skipped' => $skipped,
+                    'imported' => $processed - $skipped
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Import failed: " . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Import gagal: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function countExcelRows($file)
+    {
+        try {
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+            $worksheet = $spreadsheet->getActiveSheet();
+            return $worksheet->getHighestRow() - 1; // Subtract header row
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 
     public function downloadReport()

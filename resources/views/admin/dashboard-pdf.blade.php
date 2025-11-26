@@ -114,7 +114,7 @@
 <body>
     <div class="header">
         <h1>Dashboard Report - Ticketing System</h1>
-        <p>Generated on: {{ $currentDate }}</p>
+        <p>{{ $currentDate }}</p>
     </div>
 
     <!-- Statistics Cards -->
@@ -324,7 +324,7 @@
     </div>
 
     <div class="footer">
-        Report generated automatically by Ticketing System | {{ $currentDate }}
+        Report Ticketing | {{ $currentDate }}
     </div>
 </body>
 

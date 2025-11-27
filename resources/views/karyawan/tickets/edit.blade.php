@@ -248,7 +248,7 @@
                     <option value="Faisal" {{ old('nama_helpdesk', $ticket->nama_helpdesk) == 'Faisal' ? 'selected' : '' }}>Faisal</option>
                     <option value="Patar" {{ old('nama_helpdesk', $ticket->nama_helpdesk) == 'Patar' ? 'selected' : '' }}>Patar</option>
                     <option value="Ridwan" {{ old('nama_helpdesk', $ticket->nama_helpdesk) == 'Ridwan' ? 'selected' : '' }}>Ridwan</option>
-                    <option value="Rizky" {{ old('nama_helpdesk', $ticket->nama_helpdesk) == 'Rizky' ? 'selected' : '' }}>Rizky</option>
+                    <option value="Rizki" {{ old('nama_helpdesk', $ticket->nama_helpdesk) == 'Rizki' ? 'selected' : '' }}>Rizki</option>
                     <option value="Hafiz" {{ old('nama_helpdesk', $ticket->nama_helpdesk) == 'Hafiz' ? 'selected' : '' }}>Hafiz</option>
                     <option value="Rofina" {{ old('nama_helpdesk', $ticket->nama_helpdesk) == 'Rofina' ? 'selected' : '' }}>Rofina</option>
                 </select>

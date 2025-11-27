@@ -5,6 +5,10 @@
     <meta charset="utf-8">
     <title>Dashboard Report</title>
     <style>
+        @page: first {
+            size: landscape;
+        }
+
         body {
             font-family: 'DejaVu Sans', Arial, sans-serif;
             font-size: 11px;
@@ -117,6 +121,116 @@
             color: #666;
             font-size: 9px;
         }
+
+        /* ==============================
+            VERTICAL CHART STYLE - IMPROVED
+        ============================== */
+
+        .vertical-chart-container {
+            display: table;
+            width: 100%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .vertical-chart-row {
+            display: table-row;
+        }
+
+        .vertical-chart-cell {
+            display: table-cell;
+            text-align: center;
+            vertical-align: bottom;
+            padding: 4px;
+        }
+
+        .bar-wrapper {
+            width: 18px;
+            margin: 0 auto;
+            background: #e5e7eb;
+            border-radius: 2px;
+            position: relative;
+            height: 180px;
+            /* Increased height for longer chart */
+        }
+
+        .bar-fill {
+            background: #3b82f6;
+            width: 100%;
+            border-radius: 2px 2px 0 0;
+            position: absolute;
+            bottom: 0;
+            transition: height 0.3s ease;
+        }
+
+        .bar-value {
+            font-size: 9px;
+            margin-bottom: 3px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .bar-label {
+            margin-top: 4px;
+            font-size: 9px;
+            color: #374151;
+        }
+
+        /* Additional improvements for chart */
+        .chart-container {
+            margin-bottom: 15px;
+        }
+
+        /* New styles for chart legend and info */
+        .chart-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 10px;
+            color: #666;
+        }
+
+        .chart-legend {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 9px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            margin-right: 5px;
+        }
+
+        .chart-summary {
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 9px;
+        }
+
+        .chart-summary p {
+            margin: 3px 0;
+        }
+
+        .highlight-bar {
+            background: #e53e3e !important;
+        }
+
+        .peak-hour {
+            font-weight: bold;
+            color: #e53e3e;
+        }
     </style>
 </head>
 
@@ -146,49 +260,56 @@
         </div>
     </div>
 
-    <!-- Chart Section untuk PDF -->
+    <!-- Chart Jam -->
     <div class="section">
         <div class="section-title">Distribusi Tiket per Jam</div>
-        <table class="compact-table">
-            <thead>
-                <tr>
-                    <th width="20%">Jam</th>
-                    <th width="60%">Grafik</th>
-                    <th width="20%" class="text-right">Jumlah Tiket</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                $hours = range(0, 23);
-                $hourData = [];
-                foreach($ticketsPerHour as $item) {
-                $hourData[$item->hour] = $item->count;
-                }
-                $maxCount = max($hourData) ?: 1;
-                @endphp
 
-                @foreach($hours as $hour)
-                @php
-                $count = $hourData[$hour] ?? 0;
-                $barWidth = $maxCount > 0 ? ($count / $maxCount) * 100 : 0;
-                @endphp
-                <tr>
-                    <td>{{ sprintf("%02d:00", $hour) }}</td>
-                    <td>
-                        <div style="background: #e5e7eb; border-radius: 2px; height: 16px; position: relative;">
-                            <div style="background: #3b82f6; height: 100%; border-radius: 2px; width: {{ $barWidth }}%;"></div>
-                            @if($count > 0)
-                            <div style="position: absolute; left: 5px; top: 1px; font-size: 8px; color: #374151;">
-                                {{ $count }}
-                            </div>
-                            @endif
+        @php
+        $hours = range(0, 23);
+        $hourData = [];
+        foreach($ticketsPerHour as $item) {
+        $hourData[$item->hour] = $item->count;
+        }
+        $maxCount = max($hourData) ?: 1;
+        $peakHour = array_search(max($hourData), $hourData);
+        $totalTicketsHour = array_sum($hourData);
+        $averageTickets = round($totalTicketsHour / 24, 1);
+        @endphp
+
+        <div class="chart-container">
+            <div class="vertical-chart-container">
+                <div class="vertical-chart-row">
+                    @foreach($hours as $hour)
+                    @php
+                    $count = $hourData[$hour] ?? 0;
+                    $percentage = ($count / $maxCount) * 100;
+                    $isPeakHour = $hour == $peakHour;
+                    @endphp
+
+                    <div class="vertical-chart-cell">
+                        <div class="bar-value">
+                            {{ $count > 0 ? $count : '' }}
                         </div>
-                    </td>
-                    <td class="text-right">{{ $count }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+
+                        <div class="bar-wrapper">
+                            <div class="bar-fill" style="height: {{ $percentage }}%;"></div>
+                        </div>
+
+                        <div class="bar-label {{ $isPeakHour ? 'peak-hour' : '' }}">
+                            {{ sprintf('%02d', $hour) }}
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Summary -->
+        <div class="chart-summary">
+            <p><strong>Analisis Distribusi Tiket per Jam:</strong></p>
+            <p>• Jam dengan aktivitas tiket tertinggi: <strong>{{ sprintf('%02d', $peakHour) }}:00</strong> dengan <strong>{{ $hourData[$peakHour] ?? 0 }}</strong> tiket</p>
+            <p>• Jam dengan aktivitas tiket terendah: <strong>{{ sprintf('%02d', array_search(min($hourData), $hourData)) }}:00</strong> dengan <strong>{{ min($hourData) }}</strong> tiket</p>
+        </div>
     </div>
 
     <!-- Time-based Reports -->

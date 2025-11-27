@@ -70,7 +70,7 @@ class TicketController extends Controller
             'Faisal',
             'Patar',
             'Ridwan',
-            'Rizky',
+            'Rizki',
             'Hafiz',
             'Rofina'
         ];
@@ -104,7 +104,7 @@ class TicketController extends Controller
             'assigned' => 'required|in:Helpdesk,Development,Marketing,Team Support,Gudang,Team PAC',
             'pic_merchant' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
-            'nama_helpdesk' => 'required|in:Anissya,Nisha,Beni,Faisal,Patar,Ridwan,Rizky,Hafiz,Rofina',
+            'nama_helpdesk' => 'required|in:Anissya,Nisha,Beni,Faisal,Patar,Ridwan,Rizki,Hafiz,Rofina',
         ]);
 
         $validated['ticket_number'] = Ticket::generateTicketNumber();
@@ -177,7 +177,7 @@ class TicketController extends Controller
             'Faisal',
             'Patar',
             'Ridwan',
-            'Rizky',
+            'Rizki',
             'Hafiz',
             'Rofina'
         ];
@@ -215,7 +215,7 @@ class TicketController extends Controller
             'assigned' => 'required|in:Helpdesk,Development,Marketing,Team Support,Gudang,Team PAC',
             'pic_merchant' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
-            'nama_helpdesk' => 'required|in:Anissya,Nisha,Beni,Faisal,Patar,Ridwan,Rizky,Hafiz,Rofina',
+            'nama_helpdesk' => 'required|in:Anissya,Nisha,Beni,Faisal,Patar,Ridwan,Rizki,Hafiz,Rofina',
         ]);
 
         $ticket->update($validated);

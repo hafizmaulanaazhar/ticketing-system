@@ -412,10 +412,6 @@
      // Convert data Laravel ke JS
      const ticketsPerHour = @json($ticketsPerHour);
 
-     // ===============================
-     // Tickets per Hour Chart - Single Chart
-     // ===============================
-
      // Membuat array untuk semua jam (0-23) dan mengisi dengan data yang ada
      const hours = Array.from({
          length: 24

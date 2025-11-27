@@ -236,7 +236,7 @@
 
 <body>
     <div class="header">
-        <h1>Dashboard Report - Ticketing System</h1>
+        <h1>Report Ticketing Helpdesk</h1>
         <p>{{ $currentDate }}</p>
     </div>
 

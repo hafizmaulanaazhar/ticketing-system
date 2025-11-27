@@ -82,26 +82,50 @@
                 @enderror
             </div>
 
-            <!-- Company Information -->
-            <div>
+            <!-- Company Information dengan Combobox Custom -->
+            <div class="relative">
                 <label for="company" class="block text-sm font-medium text-gray-700 mb-2">Company *</label>
-                <input type="text" name="company" id="company" value="{{ old('company', $ticket->company) }}" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" name="company" id="company" value="{{ old('company', $ticket->company) }}" placeholder="Ketik atau pilih company" required autocomplete="off" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pt-6 pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div id="company-dropdown" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <!-- Options akan diisi oleh JavaScript -->
+                </div>
                 @error('company')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div>
+            <div class="relative">
                 <label for="branch" class="block text-sm font-medium text-gray-700 mb-2">Branch *</label>
-                <input type="text" name="branch" id="branch" value="{{ old('branch', $ticket->branch) }}" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" name="branch" id="branch" value="{{ old('branch', $ticket->branch) }}" placeholder="Ketik atau pilih branch" required autocomplete="off" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pt-6 pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div id="branch-dropdown" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <!-- Options akan diisi oleh JavaScript -->
+                </div>
                 @error('branch')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div>
+            <div class="relative">
                 <label for="kota_cabang" class="block text-sm font-medium text-gray-700 mb-2">Kota Cabang *</label>
-                <input type="text" name="kota_cabang" id="kota_cabang" value="{{ old('kota_cabang', $ticket->kota_cabang) }}" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="text" name="kota_cabang" id="kota_cabang" value="{{ old('kota_cabang', $ticket->kota_cabang) }}" placeholder="Ketik atau pilih kota cabang" required autocomplete="off" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pt-6 pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div id="kota-dropdown" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <!-- Options akan diisi oleh JavaScript -->
+                </div>
                 @error('kota_cabang')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
@@ -269,4 +293,241 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Data dari PHP
+        const companies = @json($companies);
+        const branches = @json($branches);
+        const kotaCabang = @json($kotaCabang);
+
+        // Fungsi untuk membuat combobox
+        function createCombobox(inputElement, dropdownElement, data, relatedInput = null, fetchUrl = null) {
+            let allData = [...data];
+            let isFirstFocus = true; // Flag untuk menandai pertama kali focus
+
+            // Fungsi untuk menampilkan dropdown
+            function showDropdown(filter = '') {
+                const filteredData = allData.filter(item =>
+                    item.toLowerCase().includes(filter.toLowerCase())
+                );
+
+                dropdownElement.innerHTML = '';
+
+                if (filteredData.length === 0) {
+                    const noResult = document.createElement('div');
+                    noResult.className = 'px-3 py-2 text-gray-500 text-sm';
+                    noResult.textContent = 'Tidak ada hasil';
+                    dropdownElement.appendChild(noResult);
+                } else {
+                    // Batasi maksimal 8 item yang ditampilkan
+                    const displayData = filteredData.slice(0, 8);
+
+                    displayData.forEach(item => {
+                        const option = document.createElement('div');
+                        option.className = 'px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100 last:border-b-0';
+                        option.textContent = item;
+
+                        option.addEventListener('click', function() {
+                            inputElement.value = item;
+                            dropdownElement.classList.add('hidden');
+
+                            // Trigger event untuk auto-fill field terkait
+                            if (relatedInput && fetchUrl) {
+                                const event = new Event('change', {
+                                    bubbles: true
+                                });
+                                inputElement.dispatchEvent(event);
+                            }
+                        });
+
+                        dropdownElement.appendChild(option);
+                    });
+
+                    // Tampilkan pesan jika ada lebih dari 8 hasil
+                    if (filteredData.length > 8) {
+                        const moreResult = document.createElement('div');
+                        moreResult.className = 'px-3 py-2 text-gray-400 text-xs italic border-t border-gray-100';
+                        moreResult.textContent = `+${filteredData.length - 8} hasil lainnya...`;
+                        dropdownElement.appendChild(moreResult);
+                    }
+                }
+
+                dropdownElement.classList.remove('hidden');
+            }
+
+            // Event listener untuk focus - TAMPILKAN SEMUA DATA HANYA PADA FOCUS PERTAMA
+            inputElement.addEventListener('focus', function() {
+                if (isFirstFocus) {
+                    showDropdown('');
+                    isFirstFocus = false;
+                } else {
+                    // Setelah pertama kali, hanya tampilkan jika ada nilai di input
+                    if (this.value) {
+                        showDropdown(this.value);
+                    }
+                }
+            });
+
+            // Event listener untuk input - TAMPILKAN FILTERED DATA
+            inputElement.addEventListener('input', function() {
+                showDropdown(this.value);
+            });
+
+            // Event listener untuk klik di luar
+            document.addEventListener('click', function(e) {
+                if (!inputElement.contains(e.target) && !dropdownElement.contains(e.target)) {
+                    dropdownElement.classList.add('hidden');
+                }
+            });
+
+            // Event listener untuk keyboard
+            inputElement.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const visibleOptions = dropdownElement.querySelectorAll('div:not(.text-gray-500):not(.text-gray-400)');
+                    if (visibleOptions.length > 0) {
+                        inputElement.value = visibleOptions[0].textContent;
+                    }
+                    dropdownElement.classList.add('hidden');
+                }
+
+                if (e.key === 'Escape') {
+                    dropdownElement.classList.add('hidden');
+                }
+            });
+
+            // Untuk field yang tergantung field lain (branch dan kota)
+            if (relatedInput && fetchUrl) {
+                inputElement.addEventListener('change', function() {
+                    const relatedValue = relatedInput.value;
+                    if (relatedValue && this.value) {
+                        fetch(`${fetchUrl}?company=${encodeURIComponent(relatedValue)}&branch=${encodeURIComponent(this.value)}`)
+                            .then(response => response.json())
+                            .then(newData => {
+                                allData = [...new Set([...data, ...newData])];
+                                showDropdown(this.value);
+                            });
+                    }
+                });
+            }
+
+            // JANGAN tampilkan dropdown secara otomatis saat inisialisasi
+            // Hanya siapkan data, tapi jangan showDropdown()
+        }
+
+        // Buat combobox untuk company, branch, dan kota cabang
+        createCombobox(
+            document.getElementById('company'),
+            document.getElementById('company-dropdown'),
+            companies,
+            null,
+            null
+        );
+
+        createCombobox(
+            document.getElementById('branch'),
+            document.getElementById('branch-dropdown'),
+            branches,
+            document.getElementById('company'),
+            '/tickets/branches'
+        );
+
+        createCombobox(
+            document.getElementById('kota_cabang'),
+            document.getElementById('kota-dropdown'),
+            kotaCabang,
+            document.getElementById('branch'),
+            '/tickets/kota'
+        );
+
+        // Auto-fill branch ketika company berubah
+        document.getElementById('company').addEventListener('change', function() {
+            const company = this.value;
+            if (company) {
+                fetch(`/tickets/branches?company=${encodeURIComponent(company)}`)
+                    .then(response => response.json())
+                    .then(newBranches => {
+                        // Update data branch
+                        const branchInput = document.getElementById('branch');
+                        const branchDropdown = document.getElementById('branch-dropdown');
+                        const allBranches = [...new Set([...branches, ...newBranches])];
+
+                        // Update data untuk combobox
+                        createCombobox(branchInput, branchDropdown, allBranches, document.getElementById('company'), '/tickets/branches');
+                    });
+            }
+        });
+
+        // Auto-fill kota ketika branch berubah
+        document.getElementById('branch').addEventListener('change', function() {
+            const branch = this.value;
+            const company = document.getElementById('company').value;
+            if (branch && company) {
+                fetch(`/tickets/kota?branch=${encodeURIComponent(branch)}&company=${encodeURIComponent(company)}`)
+                    .then(response => response.json())
+                    .then(newKota => {
+                        // Update data kota
+                        const kotaInput = document.getElementById('kota_cabang');
+                        const kotaDropdown = document.getElementById('kota-dropdown');
+                        const allKota = [...new Set([...kotaCabang, ...newKota])];
+
+                        // Update data untuk combobox
+                        createCombobox(kotaInput, kotaDropdown, allKota, document.getElementById('branch'), '/tickets/kota');
+                    });
+            }
+        });
+    });
+</script>
+
+<style>
+    /* Style untuk dropdown */
+    #company-dropdown,
+    #branch-dropdown,
+    #kota-dropdown {
+        position: absolute;
+        z-index: 50;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        max-height: 10rem;
+        overflow-y: auto;
+        margin-top: 0.25rem;
+    }
+
+    /* Style untuk hover option */
+    #company-dropdown div:hover:not(.text-gray-400):not(.text-gray-500),
+    #branch-dropdown div:hover:not(.text-gray-400):not(.text-gray-500),
+    #kota-dropdown div:hover:not(.text-gray-400):not(.text-gray-500) {
+        background-color: #eff6ff;
+    }
+
+    /* Scrollbar styling */
+    #company-dropdown::-webkit-scrollbar,
+    #branch-dropdown::-webkit-scrollbar,
+    #kota-dropdown::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #company-dropdown::-webkit-scrollbar-track,
+    #branch-dropdown::-webkit-scrollbar-track,
+    #kota-dropdown::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 0 0.375rem 0.375rem 0;
+    }
+
+    #company-dropdown::-webkit-scrollbar-thumb,
+    #branch-dropdown::-webkit-scrollbar-thumb,
+    #kota-dropdown::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+
+    #company-dropdown::-webkit-scrollbar-thumb:hover,
+    #branch-dropdown::-webkit-scrollbar-thumb:hover,
+    #kota-dropdown::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+</style>
 @endsection

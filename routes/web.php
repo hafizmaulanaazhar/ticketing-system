@@ -24,7 +24,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', function () {
             return view('karyawan.dashboard');
         })->name('dashboard');
-
+        Route::get('/tickets/branches', [TicketController::class, 'getBranchesByCompany']);
+        Route::get('/tickets/kota', [TicketController::class, 'getKotaByBranch']);
         Route::resource('tickets', TicketController::class);
     });
 

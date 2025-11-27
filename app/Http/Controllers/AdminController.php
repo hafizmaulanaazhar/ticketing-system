@@ -595,6 +595,6 @@ class AdminController extends Controller
 
         $pdf = PDF::loadView('admin.dashboard-pdf', $data);
 
-        return $pdf->download('dashboard-report-' . Carbon::now()->format('Y-m-d') . '.pdf');
+        return $pdf->download('Laporan-Helpdesk' . Carbon::now()->format('Y-m-d') . '.pdf');
     }
 }
